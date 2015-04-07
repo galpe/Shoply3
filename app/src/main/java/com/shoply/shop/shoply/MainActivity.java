@@ -16,7 +16,12 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         SurfaceView surface = (SurfaceView) findViewById(R.id.surfaceView);
         SurfaceHolder surfaceHolder = surface.getHolder();
+        
+        loadAllShopsToLocal();
 
+    }
+
+    private void loadAllShopsToLocal() {
     }
 
 
