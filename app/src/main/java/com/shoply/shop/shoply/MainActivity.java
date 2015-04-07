@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -12,9 +13,11 @@ import android.view.SurfaceHolder;
 import android.view.MenuInflater;
 import android.widget.SearchView;
 
+import com.estimote.sdk.Beacon;
 
-public class MainActivity extends ActionBarActivity {
 
+public class MainActivity extends ActionBarActivity  implements SearchFragment.ReceiveBeaconListener{
+    private static final String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,5 +58,10 @@ public class MainActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void onBeaconsDiscovered(Beacon closeBeacon)
+    {
+        Log.d(TAG, "found beacon");
     }
 }

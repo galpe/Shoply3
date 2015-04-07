@@ -25,4 +25,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.shoply.shop.shoply.SearchFragment"
+        android:id="@+id/searchFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        tools:layout="@layout/fragment_searchfragment" />
+
 </RelativeLayout>
