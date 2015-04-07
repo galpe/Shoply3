@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -178,28 +177,28 @@ public class SplashActivity extends Activity {
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_SHOP = "shop";
 
-            JSONObject shopsJson = new JSONObject(shopsJsonStr);
-            JSONArray weatherArray = shopsJson.getJSONArray(OWM_SHOP);
+            JSONArray shopsJsonArray = new JSONArray(shopsJsonStr);
 
+            SharedPreferences.Editor sharedPrefsEditor = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE).edit(); //TODO: put const
+            String[] shops = new String[10]; // TODO: CHANGE THAT
 
-
-            String[] resultStrs = new String[10]; // TODO: Change that
-            // Data is fetched in Celsius by default.
-            // If user prefers to see in Fahrenheit, convert the values here.
-            // We do this rather than fetching in Fahrenheit so that the user can
-            // change this option without us having to re-fetch the data once
-            // we start storing the values in a database.
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(getParent());
-//            String shopName = sharedPrefs.getString(
-//                    getString(R.string.),
-//                    getString(R.string.pref_units_metric));
-
-
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
+            for(int i = 0; i < shopsJsonArray.length(); i++) {
+                JSONObject singleShop = shopsJsonArray.getJSONObject(i);
+                String shopName = singleShop.getString("name");
+                int id = singleShop.getInt("id");
+                sharedPrefsEditor.putInt(shopName, id).commit();
+                shops[i] = shopName;
+                Log.v(LOG_TAG, "Shop is: " + singleShop.toString());
             }
-            return resultStrs;
+
+            SharedPreferences prefs = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE);
+            String restoredText = prefs.getString("text", null);
+            if (restoredText != null) {
+                int idName = prefs.getInt("ampm", 0); //0 is the default value.
+                Log.v(LOG_TAG, "SDHGSHDGJ:" + String.valueOf(idName));
+            }
+
+            return shops;
 
         }
     }
