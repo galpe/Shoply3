@@ -120,7 +120,7 @@ public class SearchFragment extends Fragment {
                 nearest = devList.getClosest();
                 double distance  = Utils.computeAccuracy(nearest);
                 Utils.Proximity prox = Utils.proximityFromAccuracy(distance);
-                if (Utils.Proximity.NEAR == prox) {
+                if ((Utils.Proximity.NEAR == prox) || (Utils.Proximity.IMMEDIATE == prox) ){
                     if (null != savedActivity) {
                         ((ReceiveBeaconListener) savedActivity).onBeaconsDiscovered(nearest);
                     }
