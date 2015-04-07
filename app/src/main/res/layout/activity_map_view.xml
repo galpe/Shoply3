@@ -3,6 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.shoply.shop.shoply.SearchFragment"
+        android:id="@+id/beaconFragment"
+        android:layout_gravity="center_horizontal" />
+
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

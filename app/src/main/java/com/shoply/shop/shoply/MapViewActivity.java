@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
+import com.estimote.sdk.Beacon;
+
 /**
  * Created by daniellag on 4/7/15.
  */
-public class MapViewActivity extends Activity {
+public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
     WebView web;
 
-
+    private Beacon closest = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,11 +28,6 @@ public class MapViewActivity extends Activity {
         web.loadUrl("http://www.google.com");
     }
 
-
-
-
-
-
     // Member variable stored to reflect user's choice
     private String mUserUrl = "http://stackoverflow.com";
 
@@ -41,5 +39,19 @@ public class MapViewActivity extends Activity {
             view.loadUrl(url);
             return true;
         }
+    }
+
+    public void onBeaconsDiscovered(Beacon closeBeacon)
+    {
+        closest = closeBeacon;
+    }
+
+    private int getBeaconID()
+    {
+        int minor = 0;
+        if (null != closest) {
+            minor = closest.getMinor();
+        }
+        return minor;
     }
 }
