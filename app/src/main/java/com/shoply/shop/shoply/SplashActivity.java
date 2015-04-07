@@ -25,7 +25,7 @@ import java.net.URL;
  */
 public class SplashActivity extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 1000;
+    private static int SPLASH_TIME_OUT = 1;
 
     private static String LOG_TAG = "SPLASH_ACTIVITY";
 
@@ -46,17 +46,17 @@ public class SplashActivity extends Activity {
                 // This method will be executed once the timer is over
                 // Start your app main activity
                 new LoadAllShopsTask().execute();
-                Intent i = new Intent(SplashActivity.this, SearchActivity.class);
-                startActivity(i);
 
+                //Intent i = new Intent(SplashActivity.this, SearchActivity.class);
+                //startActivity(i);
                 // close this activity
-                finish();
+                //finish();
             }
         }, SPLASH_TIME_OUT);
     }
 
     //To use the AsyncTask, it must be subclassed
-    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]> // TODO: can ruturn Void, no need to String cause no adapter.git 
+    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]> // TODO: can ruturn Void, no need to String cause no adapter.git
     {
 
         //The code to be executed in a background thread.
@@ -142,6 +142,11 @@ public class SplashActivity extends Activity {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(String[] result) {
+            Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+            startActivity(i);
+        }
 
 
         /* --------- Parsing the JSON Strings --------------- */

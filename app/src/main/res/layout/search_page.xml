@@ -24,11 +24,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Go"
-        android:id="@+id/button"
+        android:id="@+id/searchPageGoBtn"
         android:layout_gravity="bottom"
         android:layout_below="@+id/editText"
         android:layout_centerHorizontal="true"
         android:background="#ff64ffa6"
         android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView2"
+        android:onClick="loadMap" />
 
 </RelativeLayout>

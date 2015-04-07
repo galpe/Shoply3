@@ -17,12 +17,15 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
     private Beacon closest = null;
 
+    private int shopID;
     WebView web;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
+
+        shopID = this.getIntent().getExtras().getInt("shopID");
 
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
