@@ -19,7 +19,7 @@ public class MapViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
-        web = (WebView) findViewById(R.id.activity_map_view_id);
+        web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new HelloWebViewClient());
         web.getSettings().setJavaScriptEnabled(true);
         web.loadUrl("http://www.google.com");

@@ -21,7 +21,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private void loadAllShopsToLocal() {
+    private void loadAllShopsToLocal() { // TODO:
     }
 
 
