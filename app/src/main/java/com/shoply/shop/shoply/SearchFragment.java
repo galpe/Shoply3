@@ -46,7 +46,7 @@ public class SearchFragment extends Fragment {
     private static final Region LEET_ESTIMOTE_BEACONS_REGION = new Region("testing","b9407f301337466eaff925556b57fe6d",null,null);
     private static final int REQUEST_ENABLE_BT = 1234;
     private BeaconManager beaconManager;
-    private DeviceList devList;
+    private DeviceList devList = new DeviceList();
     private Beacon nearest;
     /**
      * Use this factory method to create a new instance of
@@ -94,6 +94,9 @@ public class SearchFragment extends Fragment {
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
+                if (beacons.isEmpty()) {
+                    return;
+                }
                 devList.replaceWith(beacons);
                 nearest = devList.getClosest();
                 double distance  = Utils.computeAccuracy(nearest);
@@ -136,6 +139,12 @@ public class SearchFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        // Check if application is setup properly
+        if (!beaconManager.checkPermissionsAndService()) {
+            Log.d(TAG, "Application does not have appropiate setup");
+            return;
+        }
 
         // Check if device supports Bluetooth Low Energy.
         if (!beaconManager.hasBluetooth()) {
