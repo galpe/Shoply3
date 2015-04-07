@@ -229,7 +229,12 @@ public class SearchFragment extends Fragment {
          * @return A beacon instance, containing all relevant data.
          */
         public Beacon getClosest() {
-            return beacons.get(0);
+            if (beacons.size() >= 1) {
+                return beacons.get(0);
+            } else {
+                return null;
+            }
+
         }
     }
 
