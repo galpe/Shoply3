@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -26,7 +25,7 @@ import java.net.URL;
  */
 public class SplashActivity extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 1000;
+    private static int SPLASH_TIME_OUT = 1;
 
     private static String LOG_TAG = "SPLASH_ACTIVITY";
 
@@ -47,17 +46,17 @@ public class SplashActivity extends Activity {
                 // This method will be executed once the timer is over
                 // Start your app main activity
                 new LoadAllShopsTask().execute();
-                Intent i = new Intent(SplashActivity.this, SearchActivity.class);
-                startActivity(i);
 
+                //Intent i = new Intent(SplashActivity.this, SearchActivity.class);
+                //startActivity(i);
                 // close this activity
-                finish();
+                //finish();
             }
         }, SPLASH_TIME_OUT);
     }
 
     //To use the AsyncTask, it must be subclassed
-    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]>
+    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]> // TODO: can ruturn Void, no need to String cause no adapter.git
     {
 
         //The code to be executed in a background thread.
@@ -143,6 +142,11 @@ public class SplashActivity extends Activity {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(String[] result) {
+            Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+            startActivity(i);
+        }
 
 
         /* --------- Parsing the JSON Strings --------------- */
@@ -178,28 +182,29 @@ public class SplashActivity extends Activity {
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_SHOP = "shop";
 
-            JSONObject shopsJson = new JSONObject(shopsJsonStr);
-            JSONArray weatherArray = shopsJson.getJSONArray(OWM_SHOP);
+            JSONArray shopsJsonArray = new JSONArray(shopsJsonStr);
 
+            SharedPreferences.Editor sharedPrefsEditor = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE).edit(); //TODO: put const
+            String[] shops = new String[10]; // TODO: CHANGE THAT
 
+            for(int i = 0; i < shopsJsonArray.length(); i++) {
+                JSONObject singleShop = shopsJsonArray.getJSONObject(i);
+                String shopName = singleShop.getString("name");
+                int id = singleShop.getInt("id");
+                String beaconGroupId = singleShop.getString("beacon_group_id");
+                sharedPrefsEditor.putInt(shopName, id);
+                sharedPrefsEditor.putString("beacon_group_id", beaconGroupId);
+                sharedPrefsEditor.commit();
 
-            String[] resultStrs = new String[10]; // TODO: Change that
-            // Data is fetched in Celsius by default.
-            // If user prefers to see in Fahrenheit, convert the values here.
-            // We do this rather than fetching in Fahrenheit so that the user can
-            // change this option without us having to re-fetch the data once
-            // we start storing the values in a database.
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(getParent());
-//            String shopName = sharedPrefs.getString(
-//                    getString(R.string.),
-//                    getString(R.string.pref_units_metric));
-
-
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
+                shops[i] = shopName;
+                Log.v(LOG_TAG, "Shop is: " + shopName +" id is: " + id + " beacon_group_id " + beaconGroupId);
             }
-            return resultStrs;
+
+            SharedPreferences prefs = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE);
+            int idName = prefs.getInt("ampm", 0); //0 is the default value.
+            Log.v(LOG_TAG, "TAG VIEW DANIELLA: " + String.valueOf(idName));
+
+            return shops;
 
         }
     }

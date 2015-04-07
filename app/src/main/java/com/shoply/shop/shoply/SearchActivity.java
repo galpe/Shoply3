@@ -11,17 +11,35 @@ import android.view.View;
  * Created by galpeer on 4/7/15.
  */
 public class SearchActivity extends ActionBarActivity {
+
+    private int shopID = 1337;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.abc_search_view);
-//
+        setContentView(R.layout.search_page);
+        findViewById(R.id.searchPageGoBtn).setOnClickListener(createGoButtonListener());
 //        // Get the intent, verify the action and get the query
 //        Intent intent = getIntent();
 //        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 //            String query = intent.getStringExtra(SearchManager.QUERY);
 //            doMySearch(query);
 //        }
+    }
+
+    /**
+     * Returns click listener on update minor button.
+     * Triggers update minor value on the beacon.
+     */
+    private View.OnClickListener createGoButtonListener() {
+        return new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Intent intent;
+                intent = new Intent(SearchActivity.this,MapViewActivity.class);
+                intent.putExtra("shopID",shopID);
+                startActivity(intent);
+
+            }
+        };
     }
 
     @Override
@@ -40,10 +58,7 @@ public class SearchActivity extends ActionBarActivity {
     }
 
 
-    public void loadMap(View view) {
-        Intent intent = new Intent(this, MapViewActivity.class);
 
-    }
 
     private void doMySearch(String query) {
         Log.d("Event", query);
