@@ -30,10 +30,25 @@ import com.estimote.sdk.Utils;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+
 public class SearchFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface ReceiveBeaconListener {
+        public void onBeaconsDiscovered(Beacon closeBeacon);
+    }
+
+    private static final String ARG_PARAM1 = "uuidParam";
 
     // TODO: Rename and change types of parameters
     private String areaUUID;
@@ -45,9 +60,12 @@ public class SearchFragment extends Fragment {
     /* Etimote vars */
     private static final Region LEET_ESTIMOTE_BEACONS_REGION = new Region("testing","b9407f301337466eaff925556b57fe6d",null,null);
     private static final int REQUEST_ENABLE_BT = 1234;
-    private BeaconManager beaconManager;
+
     private DeviceList devList = new DeviceList();
+    private Region searchRegion = null;
+    private BeaconManager beaconManager;
     private Beacon nearest;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -73,6 +91,7 @@ public class SearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             areaUUID = getArguments().getString(ARG_PARAM1);
+            searchRegion = new Region("testing",areaUUID,null,null);
         }
 
 
@@ -114,19 +133,7 @@ public class SearchFragment extends Fragment {
         super.onDetach();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface ReceiveBeaconListener {
-        public void onBeaconsDiscovered(Beacon closeBeacon);
-    }
+
 
 
     @Override
@@ -164,7 +171,11 @@ public class SearchFragment extends Fragment {
     @Override
     public void onStop() {
         try {
-            beaconManager.stopRanging(LEET_ESTIMOTE_BEACONS_REGION);
+            if (null != searchRegion) {
+                beaconManager.stopRanging(searchRegion);
+            } else {
+                beaconManager.stopRanging(LEET_ESTIMOTE_BEACONS_REGION);
+            }
         } catch (RemoteException e) {
             Log.d(TAG, "Error while stopping ranging", e);
         }
@@ -177,7 +188,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onServiceReady() {
                 try {
-                    beaconManager.startRanging(LEET_ESTIMOTE_BEACONS_REGION);
+                    if (null != searchRegion) {
+                        beaconManager.startRanging(searchRegion);
+                    } else {
+                        beaconManager.startRanging(LEET_ESTIMOTE_BEACONS_REGION);
+                    }
                 } catch (RemoteException e) {
                     Log.d(TAG, "Cannot start ranging, something terrible happened");
                 }
@@ -211,7 +226,7 @@ public class SearchFragment extends Fragment {
         /**
          * Gets the closest beacon.
          * TODO get algo
-         * @return A beacon instance, containing all relevent data.
+         * @return A beacon instance, containing all relevant data.
          */
         public Beacon getClosest() {
             return beacons.get(0);
