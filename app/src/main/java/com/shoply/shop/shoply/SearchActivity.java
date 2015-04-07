@@ -1,29 +1,58 @@
 package com.shoply.shop.shoply;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by galpeer on 4/7/15.
  */
 public class SearchActivity extends ActionBarActivity {
 
-    private int shopID = 1337;
+    AutoCompleteTextView textView;
+    SharedPreferences sharedPrefs;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_page);
         findViewById(R.id.searchPageGoBtn).setOnClickListener(createGoButtonListener());
-//        // Get the intent, verify the action and get the query
-//        Intent intent = getIntent();
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            doMySearch(query);
-//        }
+
+        // Get a reference to the AutoCompleteTextView in the layout
+        textView = (AutoCompleteTextView) findViewById(R.id.searchShop);
+        // Get the string array
+        String[] shopsAutoComplete = getShopsNamesFromSharedPreferences();
+        // Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, shopsAutoComplete);
+
+        textView.setAdapter(adapter);
+    }
+
+    private String[] getShopsNamesFromSharedPreferences() {
+        sharedPrefs = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE);
+        Set<String> shopNames = sharedPrefs.getAll().keySet();
+        String[] shops = new String[shopNames.size()];
+        Iterator<String> itr = shopNames.iterator();
+        int i = 0;
+        while (itr.hasNext()) {
+            String nextShop = itr.next();
+            shops[i] = nextShop;
+            i++;
+            Log.v("SEARCH_ACTIVITY", "Shop names: " + nextShop);
+        }
+
+
+        return shops;
     }
 
     /**
@@ -35,7 +64,11 @@ public class SearchActivity extends ActionBarActivity {
             @Override public void onClick(View view) {
                 Intent intent;
                 intent = new Intent(SearchActivity.this,MapViewActivity.class);
-                intent.putExtra("shopID",shopID);
+                String finalSearchTerm = textView.getText().toString();
+                int shopId = sharedPrefs.getInt(finalSearchTerm, -1);
+                // TODO: check that not -1!!!
+
+                intent.putExtra("shopID",shopId);
                 startActivity(intent);
 
             }

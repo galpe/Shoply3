@@ -3,6 +3,7 @@ package com.shoply.shop.shoply;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,6 +18,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
     private Beacon closest = null;
 
+    private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
+
     private int shopID;
     WebView web;
 
@@ -30,7 +33,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
-        web.loadUrl("http://www.google.com");
+        String finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
+        Log.v("MAP_VIEW_ACTIVITY", finalUrl);
+        web.loadUrl(finalUrl); // TODO: change to correct view
     }
 
 

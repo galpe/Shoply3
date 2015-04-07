@@ -151,24 +151,6 @@ public class SplashActivity extends Activity {
 
         /* --------- Parsing the JSON Strings --------------- */
 
-//        /* The date/time conversion code is going to be moved outside the asynctask later,
-//           * so for convenience we're breaking it out into its own method now.
-//           */
-//        private String getReadableDateString(long time){
-//            // Because the API returns a unix timestamp (measured in seconds),
-//            // it must be converted to milliseconds in order to be converted to valid date.
-//            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
-//            return shortenedDateFormat.format(time);
-//        }
-
-//        /**
-//         * Prepare the weather high/lows for presentation.
-//         */
-//        private String formatHighLows(double high, double low, String unitType) {
-//
-//            return "";
-//        }
-
         /**
          * Take the String representing the complete forecast in JSON Format and
          * pull out the data we need to construct the Strings needed for the wireframes.
