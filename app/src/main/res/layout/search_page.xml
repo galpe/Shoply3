@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10dp"
-    android:background="#E1E1E1"
     android:weightSum="1"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".25"
-        android:text="Find Shop" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/"
+    android:background="@drawable/search_bac">
 
 
     <EditText
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
         android:background="@drawable/rounded_edittext"
-        android:layout_weight=".75" />
+        android:id="@+id/editText"
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:hint="Enter a shop name"
+        android:textColorHint="#bbbbbb"
+        android:layout_marginTop="400dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="loadMap"
-        android:text="Find"
-        android:id="@+id/button" />
-</LinearLayout>
+        android:text="Go"
+        android:id="@+id/button"
+        android:layout_gravity="bottom"
+        android:layout_below="@+id/editText"
+        android:layout_centerHorizontal="true"
+        android:background="#ff64ffa6"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>
