@@ -1,13 +1,10 @@
 package com.shoply.shop.shoply;
 
-import android.app.ListActivity;
-import android.app.SearchManager;
-import android.os.Bundle;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.ListView;
 import android.view.View;
 
 /**
@@ -40,6 +37,12 @@ public class SearchActivity extends ActionBarActivity {
 //                searchManager.getSearchableInfo(getComponentName()));
 
         return true;
+    }
+
+
+    public void loadMap(View view) {
+        Intent intent = new Intent(this, MapViewActivity.class);
+
     }
 
     private void doMySearch(String query) {

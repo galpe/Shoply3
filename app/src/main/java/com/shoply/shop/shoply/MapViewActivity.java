@@ -1,12 +1,14 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
 import com.estimote.sdk.Beacon;
+import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
 
 /**
  * Created by daniellag on 4/7/15.
@@ -27,6 +29,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.getSettings().setJavaScriptEnabled(true);
         web.loadUrl("http://www.google.com");
     }
+
+
     // To handle "Back" key press event for WebView to go back to previous screen.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -55,8 +59,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             // TODO Auto-generated method stub
             super.onPageStarted(view, url, favicon);
         }
-
-
 
     }
 
