@@ -1,8 +1,8 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,6 +14,18 @@ import android.widget.Toast;
 import com.estimote.sdk.Beacon;
 import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+
 /**
  * Created by daniellag on 4/7/15.
  */
@@ -21,12 +33,14 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
+    private static final String LOG_TAG = "MAP_VIEW_ACTIVITY";
     private Beacon closest = null;
 
     private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
 
     private int shopID;
     private int currentClosestBeacon = 0;
+    private String finalUrl;
     WebView web;
 
     @Override
@@ -39,7 +53,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
-        String finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
+        finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
         Log.v("MAP_VIEW_ACTIVITY", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
     }
@@ -109,6 +123,103 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             minor = closest.getMinor();
         }
         return minor;
+    }
+
+
+    ///////////////////////////////////////////
+    public HashMap<String, Integer> getSpecificShopInfo(int shopId) {
+
+
+
+        // These two need to be declared outside the try/catch
+        // so that they can be closed in the finally block.
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+
+        // Will contain the raw JSON response as a string.
+        String specificShopStr = null;
+
+        try {
+
+            Uri builtUri = Uri.parse(finalUrl).buildUpon()
+                    .build();
+
+            URL url = new URL(builtUri.toString());
+
+            Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+
+            // Create the request to OpenWeatherMap, and open the connection
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            // Read the input stream into a String
+            InputStream inputStream = urlConnection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+            if (inputStream == null) {
+                // Nothing to do.
+                return null;
+            }
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                // But it does make debugging a *lot* easier if you print out the completed
+                // buffer for debugging.
+                buffer.append(line + "\n");
+            }
+
+            if (buffer.length() == 0) {
+                // Stream was empty.  No point in parsing.
+                return null;
+            }
+            specificShopStr = buffer.toString();
+            Log.v(LOG_TAG, "JSON STRING IS: " + specificShopStr);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error ", e);
+            // If the code didn't successfully get the weather data, there's no point in attempting
+            // to parse it.
+            return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    Log.e("ForecastFragment", "Error closing stream", e);
+                }
+            }
+        }
+
+
+        try {
+            return createJSONArray(specificShopStr);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private HashMap<String, Integer> createJSONArray(String specificShopStr) throws JSONException {
+
+        JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
+        JSONArray shelves = specificShopJsonObj.getJSONArray("shelves");
+        HashMap<String, Integer> nameToIdMap = new HashMap<String, Integer>();
+
+        for(int i = 0; i < shelves.length(); i++) {
+            int id = shelves.getJSONObject(i).getInt("id");
+            String name = shelves.getJSONObject(i).getString("type");
+            nameToIdMap.put(name, id);
+            Log.v(LOG_TAG, "name: " + name + " id: " + id);
+        }
+
+        return nameToIdMap;
+
+
     }
 
 
