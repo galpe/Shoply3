@@ -56,7 +56,7 @@ public class SplashActivity extends Activity {
     }
 
     //To use the AsyncTask, it must be subclassed
-    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]>
+    private class LoadAllShopsTask extends AsyncTask<String, Void, String[]> // TODO: can ruturn Void, no need to String cause no adapter.git 
     {
 
         //The code to be executed in a background thread.
@@ -186,17 +186,18 @@ public class SplashActivity extends Activity {
                 JSONObject singleShop = shopsJsonArray.getJSONObject(i);
                 String shopName = singleShop.getString("name");
                 int id = singleShop.getInt("id");
-                sharedPrefsEditor.putInt(shopName, id).commit();
+                String beaconGroupId = singleShop.getString("beacon_group_id");
+                sharedPrefsEditor.putInt(shopName, id);
+                sharedPrefsEditor.putString("beacon_group_id", beaconGroupId);
+                sharedPrefsEditor.commit();
+
                 shops[i] = shopName;
-                Log.v(LOG_TAG, "Shop is: " + singleShop.toString());
+                Log.v(LOG_TAG, "Shop is: " + shopName +" id is: " + id + " beacon_group_id " + beaconGroupId);
             }
 
             SharedPreferences prefs = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE);
-            String restoredText = prefs.getString("text", null);
-            if (restoredText != null) {
-                int idName = prefs.getInt("ampm", 0); //0 is the default value.
-                Log.v(LOG_TAG, "SDHGSHDGJ:" + String.valueOf(idName));
-            }
+            int idName = prefs.getInt("ampm", 0); //0 is the default value.
+            Log.v(LOG_TAG, "TAG VIEW DANIELLA: " + String.valueOf(idName));
 
             return shops;
 
