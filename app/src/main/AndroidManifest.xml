@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Declaration that this app is usable on phones with Bluetooth Low Energy. -->
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
@@ -67,6 +69,8 @@
         <!-- Estimote service responsible for scanning beacons. -->
         <service android:name="com.estimote.sdk.service.BeaconService"
             android:exported="false"/>
+
+
     </application>
 
 </manifest>
