@@ -1,11 +1,15 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
 import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
@@ -15,9 +19,12 @@ import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
  */
 public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
+
+    private static final String TAG = MapViewActivity.class.getSimpleName();
     private Beacon closest = null;
 
     private int shopID;
+    private int currentClosestBeacon = 0;
     WebView web;
 
     @Override
@@ -31,6 +38,19 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
         web.loadUrl("http://www.google.com");
+    }
+
+    public void onGeoClick(View view) {
+        Log.d(TAG,"geoClick");
+        updateClosest();
+        if (0 == currentClosestBeacon) {
+            Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onSearchClick(View view) {
+        Log.d(TAG,"SearchClick");
     }
 
 
@@ -70,6 +90,12 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     public void onBeaconsDiscovered(Beacon closeBeacon)
     {
         closest = closeBeacon;
+        getBeaconID();
+    }
+
+    private void updateClosest()
+    {
+        currentClosestBeacon = getBeaconID();
     }
 
     private int getBeaconID()
