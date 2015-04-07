@@ -13,9 +13,9 @@ import com.estimote.sdk.Beacon;
  */
 public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
-    WebView web;
-
     private Beacon closest = null;
+
+    WebView web;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,15 +23,25 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         setContentView(R.layout.activity_map_view);
 
         web = (WebView) findViewById(R.id.webView);
-        web.setWebViewClient(new HelloWebViewClient());
+        web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
         web.loadUrl("http://www.google.com");
     }
+    // To handle "Back" key press event for WebView to go back to previous screen.
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && web.canGoBack()) {
+            web.goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     // Member variable stored to reflect user's choice
-    private String mUserUrl = "http://stackoverflow.com";
+    //private String mUserUrl = "http://stackoverflow.com";
 
-    private class HelloWebViewClient extends WebViewClient {
+    public class ShopMapWebView extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // This line right here is what you're missing.
@@ -39,7 +49,18 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             view.loadUrl(url);
             return true;
         }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            // TODO Auto-generated method stub
+            super.onPageStarted(view, url, favicon);
+        }
+
+
+
     }
+
+
 
     public void onBeaconsDiscovered(Beacon closeBeacon)
     {
@@ -54,4 +75,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         }
         return minor;
     }
+
+
 }
