@@ -59,7 +59,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         task = new GetSpecificShopInfoTask().execute(shopID);
 
-
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
@@ -68,16 +67,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         Log.v("MAP_VIEW_ACTIVITY", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
 
-        //TODO: REMOVE
-//        getSpecificShopInfo(shopID);
-        try {
-            HashMap<String, Integer> map1 = new GetSpecificShopInfoTask().execute(1).get();
-            Log.e(TAG, "Got Map with: " + map1.get("ampm"));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void onGeoClick(View view) {
@@ -91,7 +81,15 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
     public void onSearchClick(View view) {
         Log.d(TAG,"SearchClick");
-        task.wait(); //need to see that it's over.
+
+        try {
+            HashMap<String, Integer> map1 = task.get();
+            Log.e(TAG, "Got Map with: " + map1.get("ampm"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
