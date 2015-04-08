@@ -1,9 +1,6 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -38,7 +35,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
-    private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
+    private static final String BASE_SHOPS_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
+    private static final String VIEW_URL = "https://infinite-eyrie-7266.herokuapp.com/viewer/"; // +shopId
 
     private int shopID;
 
@@ -49,8 +47,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     //Items variables
     AsyncTask<Integer, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
 
-    private String finalUrl;
+    private String baseUrl;
     private String itemsUrl;
+    private String viewUrl;
     WebView web;
 
     @Override
@@ -62,9 +61,14 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         task = new GetSpecificShopInfoTask().execute(shopID);
 
+        baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
+        itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
+        viewUrl = VIEW_URL + "13/";//String.valueOf(shopID).toString();
+
         web = (WebView) findViewById(R.id.webView);
         
         
+        web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
         //Setup an async task and let it go.
@@ -179,11 +183,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             String specificShopStr = null;
 
             try {
-                if(itemsUrl == null) {
 
-                }
-
-                Uri builtUri = Uri.parse(itemsUrl).buildUpon()
+                Uri builtUri = Uri.parse(viewUrl).buildUpon()
                         .build();
 
                 URL url = new URL(builtUri.toString());
