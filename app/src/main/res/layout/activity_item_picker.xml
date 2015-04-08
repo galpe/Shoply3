@@ -21,7 +21,9 @@
         android:hint="Enter an item name"
         android:textColorHint="#bbbbbb"
         android:layout_marginTop="10dp"
-        android:autoText="true" />
+        android:autoText="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"
