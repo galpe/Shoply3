@@ -63,7 +63,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
         itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
-        viewUrl = VIEW_URL + String.valueOf(shopID).toString() +"/"; //13/
+        viewUrl = VIEW_URL + String.valueOf(shopID).toString(); //13/
 
         task = new GetAllShopInfoByUrlTask();
 
@@ -89,8 +89,10 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
                     Toast.LENGTH_LONG).show(); // TODO: Dont send
         } else {
-            String urlWithGeoLocation = viewUrl + "?beacon_id=" + currentClosestBeacon + "/"; // TODO: DO SOMETHING
+            String urlWithGeoLocation = viewUrl + "?beacon_id=" + "\"" + currentClosestBeacon + "\"" ; // TODO: DO SOMETHING
             web.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
+            web.getSettings().setJavaScriptEnabled(true);
+            Log.e(TAG, urlWithGeoLocation);
         }
     }
 
