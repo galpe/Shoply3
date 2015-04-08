@@ -16,17 +16,14 @@ import java.util.List;
  * A fragment representing a list of Items.
  * <p/>
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnItemPressedInterface}
  * interface.
  */
 public class shopItemsFragment extends ListFragment {
 
-    private static final String ARG_PARAM1 = "itemNames";
-    private static final String ARG_PARAM2 = "itemIDs";
-
     private HashMap<String,Integer> shoppingItems;
 
-    private OnFragmentInteractionListener mListener;
+    private OnItemPressedInterface mListener;
 
     public static shopItemsFragment newInstance(HashMap<String, Integer> items) {
         shopItemsFragment fragment = new shopItemsFragment();
@@ -62,12 +59,12 @@ public class shopItemsFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        try {
+            mListener = (OnItemPressedInterface) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnItemPressedInterface");
+        }
     }
 
     @Override
@@ -84,7 +81,9 @@ public class shopItemsFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.itemPressed(
+                        shoppingItems.get(l.getItemAtPosition(position))
+            );
         }
     }
 
@@ -98,9 +97,9 @@ public class shopItemsFragment extends ListFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+    public interface OnItemPressedInterface {
+
+        public void itemPressed(int id);
     }
 
 }
