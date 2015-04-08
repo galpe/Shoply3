@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -40,6 +41,8 @@ public class SearchActivity extends ActionBarActivity {
 
 
         textView.setAdapter(adapter);
+
+
     }
 
     private String[] getShopsNamesFromSharedPreferences() {
@@ -102,8 +105,12 @@ public class SearchActivity extends ActionBarActivity {
     /* ------------------------ */
 
     public void clicked(View v) {
-        hideSoftKeyboard(this);
+
+
     }
+
+
+
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
