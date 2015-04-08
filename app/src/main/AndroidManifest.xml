@@ -56,6 +56,12 @@
             android:label="@string/app_name" >
         </activity>
 
+        <activity
+            android:name=".ItemPicker"
+            android:parentActivityName=".MapViewActivity"
+            android:label="@string/app_name" >
+        </activity>
+
         <!-- Estimote service responsible for scanning beacons. -->
         <service
             android:name="com.estimote.sdk.service.BeaconService"
