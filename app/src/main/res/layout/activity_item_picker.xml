@@ -7,17 +7,21 @@
     android:id="@+id/container"
     android:layout_weight="4"
     android:layout_alignParentBottom="true"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:nestedScrollingEnabled="false"
+    >
     <AutoCompleteTextView
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@drawable/rounded_edittext"
         android:id="@+id/searchItems"
+        android:singleLine="true"
         android:padding="10dp"
         android:gravity="center_horizontal"
         android:hint="Enter an item name"
         android:textColorHint="#bbbbbb"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:autoText="true" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"

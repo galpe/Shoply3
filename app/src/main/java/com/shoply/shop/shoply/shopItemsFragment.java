@@ -42,6 +42,8 @@ public class shopItemsFragment extends ListFragment {
     public shopItemsFragment() {
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,16 @@ public class shopItemsFragment extends ListFragment {
         // TODO: Change Adapter to display your content
         setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, valuesToMatch));
+    }
+
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        getListView().setTextFilterEnabled(true);
+    }
+
+
+    public void filterText(String s){
+        //getListView().setFilterText(s);
     }
 
 
@@ -82,7 +94,7 @@ public class shopItemsFragment extends ListFragment {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             mListener.itemPressed(
-                        shoppingItems.get(l.getItemAtPosition(position))
+                    shoppingItems.get(l.getItemAtPosition(position))
             );
         }
     }

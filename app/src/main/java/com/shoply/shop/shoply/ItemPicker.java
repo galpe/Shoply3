@@ -1,9 +1,12 @@
 package com.shoply.shop.shoply;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,17 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-
+import android.widget.AutoCompleteTextView.OnDismissListener;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class ItemPicker extends ActionBarActivity {
+public class ItemPicker extends ActionBarActivity implements shopItemsFragment.OnItemPressedInterface
+{
 
     private HashMap<String,Integer> shoppingItems;
 
+    private shopItemsFragment firstFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,19 +40,38 @@ public class ItemPicker extends ActionBarActivity {
         // Get a reference to the AutoCompleteTextView in the layout
         AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchItems);
         // Get the string array
-        List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
+        List<String> valuesToMatch = new ArrayList<>(shoppingItems.keySet());
         // Create the adapter and set it to the AutoCompleteTextView
-        ArrayAdapter<String> adapter =
+        final ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuesToMatch);
         textView.setAdapter(adapter);
 
+        textView.addTextChangedListener(new TextWatcher() {
 
-        if (savedInstanceState == null) {
+                                            @Override
+                                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                return; //Do nothing.
+                                            }
+
+                                            @Override
+                                            public void beforeTextChanged(CharSequence s, int start, int before, int count) {
+                                                return;//Do nothing
+                                            }
+
+                                            @Override
+                                            public void afterTextChanged(Editable s) {
+                                                String text = s.toString();
+                                                // Call back the Adapter with current character to Filter
+                                                firstFragment.filterText(text);
+                                            }
+                                        }
+        );
+            if (savedInstanceState == null) {
             // Check that the activity is using the layout version with
             // the fragment_container FrameLayout
             if (findViewById(R.id.fragment_container) != null) {
                 // Create a new Fragment to be placed in the activity layout
-                shopItemsFragment firstFragment = shopItemsFragment.newInstance(shoppingItems);
+                firstFragment = shopItemsFragment.newInstance(shoppingItems);
 
                 // Add the fragment to the 'fragment_container' FrameLayout
                 getFragmentManager().beginTransaction()
@@ -54,26 +80,24 @@ public class ItemPicker extends ActionBarActivity {
         }
     }
 
+    public void onItemSelected(View view) {
+        AutoCompleteTextView textView = (AutoCompleteTextView) view;
+        Editable text = textView.getText();
+        String key = text.toString();
+        int id = shoppingItems.get(key);
+        itemPressed(id);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_item_picker, menu);
-        return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void itemPressed(int id)
+    {
+        //Send this back to mapview activity.
+        //if already passed back
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result",id);
+        setResult(RESULT_OK,returnIntent);
+        finish();
+        return;
     }
+
 }

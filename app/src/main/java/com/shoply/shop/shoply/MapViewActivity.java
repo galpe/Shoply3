@@ -103,13 +103,24 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             HashMap<String, Integer> map = task.get();
             Intent i = new Intent(this, ItemPicker.class);
             i.putExtra("items",map);
-
-            startActivity(i);
+            startActivityForResult(i,0);
 
 
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //We can ignore the requestCode and resultCode because we only send one.
+        int itemID = data.getIntExtra("result",-1);
+        if (-1 ==itemID ) {
+            //Very very wrong.
+            Log.d(TAG,"got back result from subsequent activity");
+        }
+        //TODO new request URL using shop item.
+
     }
 
 
