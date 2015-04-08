@@ -1,12 +1,16 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,6 +38,13 @@ import java.util.concurrent.ExecutionException;
  * Created by daniellag on 4/7/15.
  */
 public class MapViewActivity extends Activity implements ReceiveBeaconListener{
+    /* -- for wear -- */
+
+//    private static final int NOTIFICATION_ID = 1;
+//    private static final int NOTIFICATION_REQUEST_CODE = 1;
+//    private static final int NUM_SECONDS = 5;
+
+    /* -- end wear -- */
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
@@ -54,6 +65,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private String viewUrl;
     WebView web;
 
+    //////////////////////////////////
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +101,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
                     Toast.LENGTH_LONG).show(); // TODO: Dont send
         } else {
+            showNotification(view);
             String urlWithGeoLocation = viewUrl + "?beacon_id=" + "\"" + currentClosestBeacon + "\"" ; // TODO: DO SOMETHING
             web.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
             web.getSettings().setJavaScriptEnabled(true);
@@ -290,8 +303,27 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
             return nameToIdMap;
 
-
         }
 
+        @Override
+        protected void onPostExecute(HashMap<String, Integer> stringIntegerHashMap) {
+            super.onPostExecute(stringIntegerHashMap);
+        }
+    }
+            /* ---------- ANDROID WEAR ------------- */
+    /**
+     * Handles the button to launch a notification.
+     */
+    public void showNotification(View view) {
+        Notification notification = new NotificationCompat.Builder(MapViewActivity.this).setSmallIcon(R.drawable.shopli)
+                .setContentTitle(getString(R.string.notification_title))
+                .setContentText(getString(R.string.notification_content))
+                .setSmallIcon(R.drawable.ic_launcher) // addAction
+                .build();
+
+        NotificationManager notificationManger =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManger.notify(0, notification);
     }
 }

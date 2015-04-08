@@ -18,6 +18,13 @@
             <item>Anguilla</item>
             <item>Antarctica</item>
         </string-array>
+
     <string name="title_activity_item_picker">ItemPicker</string>
+
+    <string name="main_activity_title_text"> Main Activity </string>
+    <string name="grid_activity_title_text"> Grid Activity </string>
+    <string name="notification_title"> Shoply</string>
+    <string name="action_launch_activity">View coupon</string>
+    <string name="notification_content">You have 10% discount on Tnuva milk!</string>
 
 </resources>
