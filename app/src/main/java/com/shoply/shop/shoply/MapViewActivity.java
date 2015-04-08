@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -35,7 +36,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
-    private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
+    private static final String BASE_SHOPS_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
+    private static final String VIEW_URL = "https://infinite-eyrie-7266.herokuapp.com/viewer/"; // +shopId
 
     private int shopID;
 
@@ -46,8 +48,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     //Items variables
     AsyncTask<Integer, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
 
-    private String finalUrl;
+    private String baseUrl;
     private String itemsUrl;
+    private String viewUrl;
     WebView web;
 
     @Override
@@ -59,11 +62,18 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         task = new GetSpecificShopInfoTask().execute(shopID);
 
+        baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
+        itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
+        viewUrl = VIEW_URL + "13/";//String.valueOf(shopID).toString();
+
         web = (WebView) findViewById(R.id.webView);
         
         
+        web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
+        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
 
@@ -76,7 +86,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         updateClosest();
         if (0 == currentClosestBeacon) {
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG).show(); // TODO: Dont send
         }
     }
 
@@ -93,8 +103,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                 shopItemsFragment firstFragment = shopItemsFragment.newInstance(map);
 
                 // Add the fragment to the 'fragment_container' FrameLayout
-                getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+                //getFragmentManager().beginTransaction()
+                //    .add(R.id.fragment_container, firstFragment).commit();
             }
 
         } catch (InterruptedException e) {
@@ -176,11 +186,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             String specificShopStr = null;
 
             try {
-                if(itemsUrl == null) {
 
-                }
-
-                Uri builtUri = Uri.parse(itemsUrl).buildUpon()
+                Uri builtUri = Uri.parse(viewUrl).buildUpon()
                         .build();
 
                 URL url = new URL(builtUri.toString());

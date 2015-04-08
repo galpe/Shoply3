@@ -1,11 +1,13 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.ListFragment;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class shopItemsFragment extends ListFragment {
         shopItemsFragment fragment = new shopItemsFragment();
         Bundle args = new Bundle();
 
-        args.putSerializable("items",items);
+        args.putSerializable("items", items);
 
         fragment.setArguments(args);
         return fragment;
