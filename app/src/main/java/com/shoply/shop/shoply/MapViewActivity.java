@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -48,7 +47,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private int currentClosestBeacon = 0;
 
     //Items variables
-    AsyncTask<Integer, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
+    AsyncTask<String, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
 
     private String baseUrl;
     private String itemsUrl;
@@ -62,11 +61,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         shopID = this.getIntent().getExtras().getInt("shopID");
 
-        task = new GetSpecificShopInfoTask().execute(shopID);
-
         baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
         itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
-        viewUrl = VIEW_URL + String.valueOf(shopID).toString() +"/";//13/
+        viewUrl = VIEW_URL + String.valueOf(shopID).toString() +"/"; //13/
+
+        task = new GetAllShopInfoByUrlTask().execute(viewUrl);
+
+
 
         web = (WebView) findViewById(R.id.webView);
 
@@ -79,7 +80,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.getSettings().setUseWideViewPort(true);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
-        task = new GetSpecificShopInfoTask().execute(shopID);
+        task = new GetAllShopInfoByUrlTask().execute(shopID);
 
 
 
@@ -183,12 +184,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class GetSpecificShopInfoTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
+    private class GetAllShopInfoByUrlTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
 
 
-        protected HashMap<String, Integer> doInBackground(Integer... params) { //TODO: remove integer
+        protected HashMap<String, Integer> doInBackground(String... params) {
 
-
+            //check length is indeed 1 - this is the url to execute.
+            String urlToLoad = params[0];
 
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
@@ -200,7 +202,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
             try {
 
-                Uri builtUri = Uri.parse(viewUrl).buildUpon()
+                Uri builtUri = Uri.parse(urlToLoad).buildUpon()
                         .build();
 
                 URL url = new URL(builtUri.toString());
