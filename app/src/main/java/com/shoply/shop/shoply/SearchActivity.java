@@ -33,7 +33,7 @@ public class SearchActivity extends ActionBarActivity {
         String[] shopsAutoComplete = getShopsNamesFromSharedPreferences();
         // Create the adapter and set it to the AutoCompleteTextView
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, shopsAutoComplete);
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shopsAutoComplete);
 
         textView.setAdapter(adapter);
     }
@@ -66,11 +66,10 @@ public class SearchActivity extends ActionBarActivity {
                 intent = new Intent(SearchActivity.this,MapViewActivity.class);
                 String finalSearchTerm = textView.getText().toString();
                 int shopId = sharedPrefs.getInt(finalSearchTerm, -1);
-                // TODO: check that not -1!!!
                 if (-1 == shopId) {
                     //invalid shopID, show toast and do not move on.
                     Toast.makeText(SearchActivity.this, "Non existent shop, we're very sorry.",
-                            Toast.LENGTH_LONG).show(); // TODO: Dont send
+                            Toast.LENGTH_LONG).show();
                     return;
                 }
                 intent.putExtra("shopID",shopId);
