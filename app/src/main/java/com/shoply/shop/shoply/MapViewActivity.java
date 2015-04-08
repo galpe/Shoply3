@@ -35,7 +35,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
-    private static final String LOG_TAG = "MAP_VIEW_ACTIVITY";
+
     private Beacon closest = null;
 
     private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
@@ -57,7 +57,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
         finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
-        itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json"
+        itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json";
         Log.v("MAP_VIEW_ACTIVITY", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
 
@@ -65,7 +65,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 //        getSpecificShopInfo(shopID);
         try {
             HashMap<String, Integer> map1 = new GetSpecificShopInfoTask().execute(1).get();
-            Log.e(LOG_TAG, "Got Map with: " + map1.get("ampm"));
+            Log.e(TAG, "Got Map with: " + map1.get("ampm"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -164,7 +164,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
                 URL url = new URL(builtUri.toString());
 
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+                Log.v(TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -193,9 +193,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                     return null;
                 }
                 specificShopStr = buffer.toString();
-                Log.v(LOG_TAG, "JSON STRING IS: " + specificShopStr);
+                Log.v(TAG, "JSON STRING IS: " + specificShopStr);
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
+                Log.e(TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
                 // to parse it.
                 return null;
@@ -216,7 +216,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             try {
                 return createJSONArray(specificShopStr);
             } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
+                Log.e(TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
             return null;
@@ -232,7 +232,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                 int id = shelves.getJSONObject(i).getInt("id");
                 String name = shelves.getJSONObject(i).getString("name");
                 nameToIdMap.put(name, id);
-                Log.e(LOG_TAG, "name: " + name + " id: " + id);
+                Log.e(TAG, "name: " + name + " id: " + id);
             }
 
             return nameToIdMap;
