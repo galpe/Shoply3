@@ -35,13 +35,17 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     private static final String TAG = MapViewActivity.class.getSimpleName();
-
-    private Beacon closest = null;
-
     private static final String BASE_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
 
     private int shopID;
+
+    //Location tracking variables
+    private Beacon closest = null;
     private int currentClosestBeacon = 0;
+
+    //Items variables
+    AsyncTask<Integer, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
+
     private String finalUrl;
     private String itemsUrl;
     WebView web;
@@ -52,6 +56,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         setContentView(R.layout.activity_map_view);
 
         shopID = this.getIntent().getExtras().getInt("shopID");
+
+        task = new GetSpecificShopInfoTask().execute(shopID);
+
 
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
@@ -84,6 +91,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
     public void onSearchClick(View view) {
         Log.d(TAG,"SearchClick");
+        task.wait(); //need to see that it's over.
     }
 
 
