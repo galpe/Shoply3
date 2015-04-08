@@ -60,15 +60,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         shopID = this.getIntent().getExtras().getInt("shopID");
 
-
+        task = new GetSpecificShopInfoTask().execute(shopID);
 
         web = (WebView) findViewById(R.id.webView);
+        
+        
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
-        finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
-        itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json";
-        Log.v("MAP_VIEW_ACTIVITY", finalUrl);
-        web.loadUrl(finalUrl); // TODO: change to correct view
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
 
@@ -181,6 +179,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             String specificShopStr = null;
 
             try {
+                if(itemsUrl == null) {
+
+                }
 
                 Uri builtUri = Uri.parse(itemsUrl).buildUpon()
                         .build();

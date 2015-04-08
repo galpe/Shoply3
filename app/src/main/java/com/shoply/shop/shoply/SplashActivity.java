@@ -26,8 +26,10 @@ import java.net.URL;
 public class SplashActivity extends Activity {
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 1;
-
     private static String LOG_TAG = "SPLASH_ACTIVITY";
+    public static final String URL_TO_ALL_SHOPS =  "https://infinite-eyrie-7266.herokuapp.com/shops.json";
+    public static final int NUM_OF_SHOPS_TO_FETCH =  10;
+    public static final String CURRENT_SHARED_PREFERENCES_NAME =  "SplashActivitySharedPref";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,28 +38,20 @@ public class SplashActivity extends Activity {
 
         new Handler().postDelayed(new Runnable() {
 
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
             @Override
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
                 new LoadAllShopsTask().execute();
 
-                //Intent i = new Intent(SplashActivity.this, SearchActivity.class);
-                //startActivity(i);
-                // close this activity
-                //finish();
+
             }
         }, SPLASH_TIME_OUT);
     }
 
-    //To use the AsyncTask, it must be subclassed
     private class LoadAllShopsTask extends AsyncTask<String, Void, String[]> // TODO: can ruturn Void, no need to String cause no adapter.git
     {
+        boolean gotException = false;
 
         //The code to be executed in a background thread.
         @Override
@@ -74,10 +68,7 @@ public class SplashActivity extends Activity {
             String format = "json";
 
             try {
-                final String SHOPS_LIST_BASE_URL =
-                        "https://infinite-eyrie-7266.herokuapp.com/shops.json";
-//                final String QUERY_PARAM = "q";
-//                final String FORMAT_PARAM = "mode";
+                final String SHOPS_LIST_BASE_URL = URL_TO_ALL_SHOPS;
 
                 Uri builtUri = Uri.parse(SHOPS_LIST_BASE_URL).buildUpon()
                         .build();
@@ -115,9 +106,8 @@ public class SplashActivity extends Activity {
                 shoplySearchStr = buffer.toString();
                 Log.v(LOG_TAG, "JSON STRING IS: " + shoplySearchStr);
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attempting
-                // to parse it.
+                gotException = true;
+                Log.e(LOG_TAG, "Got exception on network ", e);
                 return null;
             } finally {
                 if (urlConnection != null) {
@@ -127,7 +117,7 @@ public class SplashActivity extends Activity {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("ForecastFragment", "Error closing stream", e);
+                        Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
             }
@@ -144,50 +134,47 @@ public class SplashActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] result) {
-            Intent i = new Intent(getApplicationContext(), SearchActivity.class);
-            startActivity(i);
+            if(gotException) {
+                Log.e(LOG_TAG, "GOT A NETWORK ERROR");
+                setContentView(R.layout.network_error);
+            } else {
+                Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(i);
+            }
+
         }
 
 
         /* --------- Parsing the JSON Strings --------------- */
 
-        /**
-         * Take the String representing the complete forecast in JSON Format and
-         * pull out the data we need to construct the Strings needed for the wireframes.
-         *
-         * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-         * into an Object hierarchy for us.
-         */
         private String[] getShopsFromJson(String shopsJsonStr)
                 throws JSONException {
 
             // These are the names of the JSON objects that need to be extracted.
-            final String OWM_SHOP = "shop";
+            final String PRODUCT_NAME_JSON_KEY = "name";
+            final String PRODUCT_ID_JSON_KEY = "id";
+            final String PRODUCT_BEACON_GROUP_JSON_KEY = "beacon_group_id";
 
             JSONArray shopsJsonArray = new JSONArray(shopsJsonStr);
 
-            SharedPreferences.Editor sharedPrefsEditor = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE).edit(); //TODO: put const
-            String[] shops = new String[10]; // TODO: CHANGE THAT
+            SharedPreferences.Editor sharedPrefsEditor = getSharedPreferences(CURRENT_SHARED_PREFERENCES_NAME, MODE_PRIVATE).edit();
+            String[] shops = new String[NUM_OF_SHOPS_TO_FETCH]; // CHANGE THAT IN THE FUTURE
 
             for(int i = 0; i < shopsJsonArray.length(); i++) {
                 JSONObject singleShop = shopsJsonArray.getJSONObject(i);
-                String shopName = singleShop.getString("name");
-                int id = singleShop.getInt("id");
-                String beaconGroupId = singleShop.getString("beacon_group_id");
+                String shopName = singleShop.getString(PRODUCT_NAME_JSON_KEY);
+                int id = singleShop.getInt(PRODUCT_ID_JSON_KEY);
+                String beaconGroupId = singleShop.getString(PRODUCT_BEACON_GROUP_JSON_KEY);
                 sharedPrefsEditor.putInt(shopName, id);
-                sharedPrefsEditor.putString("beacon_group_id", beaconGroupId);
+                sharedPrefsEditor.putString(PRODUCT_BEACON_GROUP_JSON_KEY, beaconGroupId);
                 sharedPrefsEditor.commit();
 
                 shops[i] = shopName;
                 Log.v(LOG_TAG, "Shop is: " + shopName +" id is: " + id + " beacon_group_id " + beaconGroupId);
             }
 
-            SharedPreferences prefs = getSharedPreferences("SplashActivitySharedPref", MODE_PRIVATE);
-            int idName = prefs.getInt("ampm", 0); //0 is the default value.
-            Log.v(LOG_TAG, "TAG VIEW DANIELLA: " + String.valueOf(idName));
-
+            SharedPreferences prefs = getSharedPreferences(CURRENT_SHARED_PREFERENCES_NAME, MODE_PRIVATE);
             return shops;
-
         }
     }
 }

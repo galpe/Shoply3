@@ -6,9 +6,6 @@ import android.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,7 +53,6 @@ public class shopItemsFragment extends ListFragment {
         if (getArguments() != null) {
             shoppingItems = (HashMap<String,Integer>) getArguments().getSerializable("items");
         }
-
         List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
 
         // TODO: Change Adapter to display your content
