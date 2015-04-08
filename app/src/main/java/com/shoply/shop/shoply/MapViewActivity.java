@@ -1,9 +1,6 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,7 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
-import com.shoply.shop.shoply.SearchFragment.ReceiveBeaconListener;
+import com.shoply.shop.shoply.EtimoteLocateFragment.ReceiveBeaconListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +81,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     }
 
     public void onSearchClick(View view) {
-        Log.d(TAG,"SearchClick");
+        Log.d(TAG, "SearchClick");
 
         try {
             HashMap<String, Integer> map = task.get();
