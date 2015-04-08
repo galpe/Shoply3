@@ -18,5 +18,6 @@
             <item>Anguilla</item>
             <item>Antarctica</item>
         </string-array>
+    <string name="title_activity_item_picker">ItemPicker</string>
 
 </resources>
