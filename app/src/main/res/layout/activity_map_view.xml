@@ -12,6 +12,10 @@
         android:layout_gravity="center_horizontal"
         android:weightSum="1"
          />
+
+
+
+
     <LinearLayout
         android:id="@+id/LinearLayout02"
         android:layout_height="match_parent"
@@ -54,7 +58,10 @@
             android:layout_columnSpan="28"
             android:background="@drawable/geolocate"
             android:layout_height="match_parent" />
-
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/fragment_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </GridLayout>
 
 </LinearLayout>

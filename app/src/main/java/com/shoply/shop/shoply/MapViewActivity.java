@@ -1,6 +1,9 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -57,7 +60,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         shopID = this.getIntent().getExtras().getInt("shopID");
 
-        task = new GetSpecificShopInfoTask().execute(shopID);
+
 
         web = (WebView) findViewById(R.id.webView);
         web.setWebViewClient(new ShopMapWebView());
@@ -66,6 +69,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json";
         Log.v("MAP_VIEW_ACTIVITY", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
+        //Setup an async task and let it go.
+        task = new GetSpecificShopInfoTask().execute(shopID);
+
 
 
     }
@@ -83,8 +89,19 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         Log.d(TAG,"SearchClick");
 
         try {
-            HashMap<String, Integer> map1 = task.get();
-            Log.e(TAG, "Got Map with: " + map1.get("ampm"));
+            HashMap<String, Integer> map = task.get();
+
+            // Check that the activity is using the layout version with
+            // the fragment_container FrameLayout
+            if (findViewById(R.id.fragment_container) != null) {
+                // Create a new Fragment to be placed in the activity layout
+                shopItemsFragment firstFragment = shopItemsFragment.newInstance(map);
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, firstFragment).commit();
+            }
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

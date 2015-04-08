@@ -8,8 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-import com.shoply.shop.shoply.dummy.DummyContent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +27,17 @@ public class shopItemsFragment extends ListFragment {
     private static final String ARG_PARAM2 = "itemIDs";
 
     // TODO: Rename and change types of parameters
-    private HashMap<Integer,String> shoppingItems = new HashMap<Integer,String>();
+    private HashMap<String,Integer> shoppingItems;
 
     private OnFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
-    public static shopItemsFragment newInstance(String[] itemNames, int[] itemIDs) {
+    public static shopItemsFragment newInstance(HashMap<String, Integer> items) {
         shopItemsFragment fragment = new shopItemsFragment();
         Bundle args = new Bundle();
-        args.putStringArray(ARG_PARAM1, itemNames);
-        args.putIntArray(ARG_PARAM2, itemIDs);
+
+        args.putSerializable("items",items);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,15 +54,11 @@ public class shopItemsFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            String[] itemNames = getArguments().getStringArray(ARG_PARAM1);
-            Integer[] itemIDs = (Integer[])getArguments().getIntegerArrayList(ARG_PARAM2).toArray();
-            //hidden assumption arrays are length equivalent
-            for (int i = 0; i< itemIDs.length && i< itemNames.length; i++)
-            {
-                shoppingItems.put(itemIDs[i],itemNames[i]);
-            }
+            shoppingItems = (HashMap<String,Integer>) getArguments().getSerializable("items");
         }
-        List<String> valuesToMatch=(List<String>) shoppingItems.values();
+
+        List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
+
         // TODO: Change Adapter to display your content
         setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, valuesToMatch));
@@ -73,12 +68,12 @@ public class shopItemsFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        try {
+//            mListener = (OnFragmentInteractionListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
@@ -95,7 +90,7 @@ public class shopItemsFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
