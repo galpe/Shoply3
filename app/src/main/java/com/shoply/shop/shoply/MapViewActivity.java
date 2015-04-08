@@ -72,6 +72,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
+//        web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
@@ -130,6 +131,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     //private String mUserUrl = "http://stackoverflow.com";
 
     public class ShopMapWebView extends WebViewClient {
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // This line right here is what you're missing.
