@@ -122,7 +122,17 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             webView.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
             webView.getSettings().setJavaScriptEnabled(true);
             Log.e(TAG, urlWithGeoLocation);
+
+            //////
+            String itemName = getClosestItemWithCoupon(currentClosestBeacon);
+
         }
+    }
+
+
+    public String getClosestItemWithCoupon(int currentClosestBeaconId) {
+
+        return "";
     }
 
     public void onSearchClick(View view) {
@@ -317,6 +327,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             return null;
         }
 
+        // ONLY USED FOR ITEMS PARSE!
         private HashMap<String, Integer> createJSONArray(String specificShopStr) throws JSONException {
 
             JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
