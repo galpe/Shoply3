@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1" >
 
     <fragment
         android:layout_width="match_parent"
@@ -9,12 +10,12 @@
         android:name="com.shoply.shop.shoply.SearchFragment"
         android:id="@+id/beaconFragment"
         android:layout_gravity="center_horizontal"
-        android:weightSum="2" />
+         />
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2" >
+        android:layout_weight="0.5" >
 
         <WebView
             android:layout_width="match_parent"
@@ -38,16 +39,15 @@
             android:layout_height="65dp"
             android:drawableTop="@drawable/ic_search_medium"
             android:drawablePadding="-50dp"
-            android:background="@drawable/rounded_edittext"
             android:gravity="center_horizontal|top"
             android:id="@+id/button3"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0.015"
-            style="?android:attr/borderlessButtonStyle"/>
+            />
         <ImageButton
-            style="@style/Base.TextAppearance.AppCompat"
+
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:id="@+id/button2"
