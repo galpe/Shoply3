@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -73,8 +72,10 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView(progress));
         web.getSettings().setJavaScriptEnabled(true);
+        web.getSettings().setLoadWithOverviewMode(true);
+        web.getSettings().setUseWideViewPort(true);
 //        web.getSettings().setLoadWithOverviewMode(true);
-        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+//        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
