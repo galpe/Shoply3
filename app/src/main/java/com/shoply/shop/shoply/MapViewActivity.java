@@ -74,7 +74,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView(progress));
         web.getSettings().setJavaScriptEnabled(true);
-        web.getSettings().setLoadWithOverviewMode(true);
+        web.getSettings().setLoadWithOverviewMode(true); // TODO: After Tal centers
         web.getSettings().setUseWideViewPort(true);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
