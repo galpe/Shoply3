@@ -27,7 +27,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/smal_icon_search"
+            android:drawableTop="@drawable/small_search_icon"
             android:gravity="center_horizontal|center_vertical"
             android:id="@+id/button3"
             android:layout_marginLeft="15dp"
