@@ -166,6 +166,12 @@ public class SplashActivity extends Activity {
                 String shopName = singleShop.getString(PRODUCT_NAME_JSON_KEY);
                 int id = singleShop.getInt(PRODUCT_ID_JSON_KEY);
                 String beaconGroupId = singleShop.getString(PRODUCT_BEACON_GROUP_JSON_KEY);
+                JSONArray beaconsArray = singleShop.getJSONArray("beacons");
+                for(int z =0; z < beaconsArray.length(); z++) {
+                    sharedPrefsEditor.putInt(beaconsArray.getJSONObject(z).getString("external_id") + "_X", beaconsArray.getJSONObject(z).getInt("x"));
+                    sharedPrefsEditor.putInt(beaconsArray.getJSONObject(z).getString("external_id") + "_Y", beaconsArray.getJSONObject(z).getInt("y"));
+                }
+
                 sharedPrefsEditor.putInt(shopName, id);
                 sharedPrefsEditor.putString(PRODUCT_BEACON_GROUP_JSON_KEY, beaconGroupId);
                 sharedPrefsEditor.commit();

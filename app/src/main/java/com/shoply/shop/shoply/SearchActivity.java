@@ -58,6 +58,8 @@ public class SearchActivity extends ActionBarActivity {
         return shops;
     }
 
+
+
     /**
      * Returns click listener on update minor button.
      * Triggers update minor value on the beacon.

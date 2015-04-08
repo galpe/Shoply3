@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,7 +33,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -61,6 +65,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private String viewUrl;
     WebView webView;
     WebSettings webSettings;
+    HashMap<String, Point> nameToPoint;
 
     //////////////////////////////////
     @Override
@@ -125,14 +130,31 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
             //////
             String itemName = getClosestItemWithCoupon(currentClosestBeacon);
+            Log.e("DANIELLA", itemName);
 
         }
     }
 
 
     public String getClosestItemWithCoupon(int currentClosestBeaconId) {
+        final HashSet<Point> pointsCollection = new HashSet<Point>();
+        pointsCollection.add(new Point(1,1));
+        pointsCollection.add(new Point(2,2));
+        pointsCollection.add(new Point(3,3));
+        final Point nearest = Collections.min(pointsCollection, new Comparator<Point>() {
 
-        return "";
+            public int compare(final Point p1, final Point p2) {
+                double distance = Math.sqrt(Math.pow((p1.x - p2.x), 2) + (Math.pow((p1.y - p2.y), 2)));
+                if(distance < 0) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+
+            }
+        });
+
+        return nearest.x + "," + nearest.y;
     }
 
     public void onSearchClick(View view) {
@@ -223,7 +245,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void onBeaconsDiscovered(Beacon closeBeacon)
     {
         closest = closeBeacon;
@@ -333,12 +355,16 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
             JSONArray shelves = specificShopJsonObj.getJSONArray("groceries");
             HashMap<String, Integer> nameToIdMap = new HashMap<String, Integer>();
+            nameToPoint = new HashMap<String, Point>();
 
             for(int i = 0; i < shelves.length(); i++) {
                 int id = shelves.getJSONObject(i).getInt("id");
                 String name = shelves.getJSONObject(i).getString("name");
+                int x = shelves.getJSONObject(i).getInt("x");
+                int y = shelves.getJSONObject(i).getInt("y");
                 nameToIdMap.put(name, id);
-                Log.e(TAG, "name: " + name + " id: " + id);
+                nameToPoint.put(name, new Point(x,y));
+                Log.e("DANIELLA", "name: " + name + " x: " + x + " y: " + y);
             }
 
             return nameToIdMap;
