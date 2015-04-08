@@ -22,29 +22,35 @@
         android:layout_width="match_parent"
         android:layout_weight="4"
         android:layout_alignParentBottom="true"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:background="#ff22729f">
         <Button
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:drawableTop="@drawable/ic_search_button"
-            android:gravity="center_horizontal|top"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/smal_icon_search"
+            android:gravity="center_horizontal|center_vertical"
             android:id="@+id/button3"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0.18"
+            android:alpha="0.8"
             android:onClick="onSearchClick"
-            android:background="#ff3eb8ff" />
+            android:background="#a9a9a9"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
         <ImageButton
 
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:id="@+id/button2"
-            android:background="@drawable/ic_get_location"
+            android:background="@drawable/ic_mylocation"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_marginRight="5dp"
-            android:layout_weight="0.82"
-            android:layout_marginBottom="0dp"
-            android:onClick="onGeoClick" />
+            android:layout_marginRight="15dp"
+            android:layout_weight="0.8"
+            android:alpha="0.85"
+            android:layout_marginBottom="5dp"
+            android:onClick="onGeoClick"
+            android:layout_marginTop="5dp" />
     </LinearLayout>
     <GridLayout
         android:layout_width="match_parent"
