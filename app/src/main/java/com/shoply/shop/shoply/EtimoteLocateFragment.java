@@ -99,7 +99,7 @@ public class EtimoteLocateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_searchfragment, container, false);
+        return inflater.inflate(R.layout.fragment_etimotefind, container, false);
     }
     @Override
     public void onAttach(Activity activity) {
