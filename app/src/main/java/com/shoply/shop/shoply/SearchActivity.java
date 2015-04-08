@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-
+import android.widget.Toast;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -67,7 +67,12 @@ public class SearchActivity extends ActionBarActivity {
                 String finalSearchTerm = textView.getText().toString();
                 int shopId = sharedPrefs.getInt(finalSearchTerm, -1);
                 // TODO: check that not -1!!!
-
+                if (-1 == shopId) {
+                    //invalid shopID, show toast and do not move on.
+                    Toast.makeText(SearchActivity.this, "Non existent shop, we're very sorry.",
+                            Toast.LENGTH_LONG).show(); // TODO: Dont send
+                    return;
+                }
                 intent.putExtra("shopID",shopId);
                 startActivity(intent);
 
