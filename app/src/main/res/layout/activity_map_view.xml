@@ -1,47 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <fragment
-        android:layout_width="0px"
-        android:layout_height="0px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:name="com.shoply.shop.shoply.SearchFragment"
         android:id="@+id/beaconFragment"
-        android:layout_gravity="center_horizontal"
-        tools:layout="@layout/fragment_searchfragment" />
+        android:layout_gravity="center_horizontal" />
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageButton
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:contentDescription="Find self on map"
-            android:id="@+id/locateBtn"
-            android:onClick="onGeoClick"
-            android:layout_row="11"
-            android:layout_column="11"
-            android:background="@drawable/geolocate" />
-
-        <ImageButton
-            android:layout_width="75dp"
-            android:contentDescription="Search for items"
-            android:layout_height="75dp"
-            android:id="@+id/searchBtn"
-            android:onClick="onSearchClick"
-            android:layout_row="11"
-            android:layout_column="29"
-            android:background="@drawable/ic_action_search" />
+        android:layout_height="564dp">
 
         <WebView
             android:layout_width="match_parent"
-            android:layout_height="563dp"
+            android:layout_height="match_parent"
             android:id="@+id/webView"
-            android:layout_row="57"
+            android:layout_row="0"
             android:layout_column="0"
-            android:layout_columnSpan="30" />
+            android:layout_columnSpan="28"
+            android:background="@drawable/geolocate" />
+
+
+
+
     </GridLayout>
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
+        android:layout_height="75dp"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:weightSum="1">
+        <EditText
+            android:layout_width="310dp"
+            android:layout_height="65dp"
+            android:hint="Serach Products"
+            android:background="@drawable/rounded_edittext"
+            android:gravity="center_horizontal|center_vertical"
+            android:id="@+id/button3"
+            android:layout_row="8"
+            android:layout_column="26"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            style="?android:attr/borderlessButtonStyle"/>
+        <ImageButton
+            style="@style/Base.TextAppearance.AppCompat"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/button2"
+            android:layout_row="8"
+            android:layout_column="27"
+            android:background="@drawable/ic_my_location"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="0dp" />
+    </LinearLayout>
 </LinearLayout>
