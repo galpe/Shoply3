@@ -33,10 +33,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -50,6 +48,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private static final String TAG = MapViewActivity.class.getSimpleName();
     private static final String BASE_SHOPS_URL = "https://infinite-eyrie-7266.herokuapp.com/shops/";
     private static final String VIEW_URL = "https://infinite-eyrie-7266.herokuapp.com/viewer/"; // +shopId
+    private static  String COUPON_STR = ""; // +shopId
+
 
     private int shopID;
 
@@ -60,12 +60,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     //Items variables
     AsyncTask<String, Void, HashMap<String, Integer>> task; //We'll need to wait on this for item search
 
-    private String baseUrl;
+    private String beaconsUrl;
     private String itemsUrl;
     private String viewUrl;
     WebView webView;
     WebSettings webSettings;
     HashMap<String, Point> nameToPoint;
+    HashMap<String, Point> beaconToPoint;
 
     //////////////////////////////////
     @Override
@@ -75,7 +76,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         shopID = this.getIntent().getExtras().getInt("shopID");
 
-        baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
+//        beaconsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
         itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
         viewUrl = VIEW_URL + String.valueOf(shopID).toString(); //13/
 
@@ -122,6 +123,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
                     Toast.LENGTH_LONG).show(); // TODO: Dont send
         } else {
+            COUPON_STR = getClosestItemWithCoupon(String.valueOf(currentClosestBeacon));
+            Log.e("CLOSEST", COUPON_STR);
             showNotification(view);
             String urlWithGeoLocation = viewUrl + "?beacon_id=" + "\"" + currentClosestBeacon + "\"" ; // TODO: DO SOMETHING
             webView.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
@@ -129,33 +132,12 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             Log.e(TAG, urlWithGeoLocation);
 
             //////
-            String itemName = getClosestItemWithCoupon(currentClosestBeacon);
-            Log.e("DANIELLA", itemName);
+
 
         }
     }
 
 
-    public String getClosestItemWithCoupon(int currentClosestBeaconId) {
-        final HashSet<Point> pointsCollection = new HashSet<Point>();
-        pointsCollection.add(new Point(1,1));
-        pointsCollection.add(new Point(2,2));
-        pointsCollection.add(new Point(3,3));
-        final Point nearest = Collections.min(pointsCollection, new Comparator<Point>() {
-
-            public int compare(final Point p1, final Point p2) {
-                double distance = Math.sqrt(Math.pow((p1.x - p2.x), 2) + (Math.pow((p1.y - p2.y), 2)));
-                if(distance < 0) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-
-            }
-        });
-
-        return nearest.x + "," + nearest.y;
-    }
 
     public void onSearchClick(View view) {
         Log.d(TAG, "SearchClick");
@@ -268,7 +250,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class GetAllShopInfoByUrlTask extends AsyncTask<String, Void, HashMap<String, Integer>> {
+    private class GetAllShopInfoByUrlTask extends AsyncTask<String, Void, HashMap<String, Integer>> { // SPECIFIC SHOP
 
 
         protected HashMap<String, Integer> doInBackground(String... params) {
@@ -354,7 +336,11 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
             JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
             JSONArray shelves = specificShopJsonObj.getJSONArray("groceries");
+            JSONArray beacons = specificShopJsonObj.getJSONArray("beacons");
+
             HashMap<String, Integer> nameToIdMap = new HashMap<String, Integer>();
+            beaconToPoint = new HashMap<String, Point>();
+
             nameToPoint = new HashMap<String, Point>();
 
             for(int i = 0; i < shelves.length(); i++) {
@@ -367,6 +353,14 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                 Log.e("DANIELLA", "name: " + name + " x: " + x + " y: " + y);
             }
 
+            for(int i = 0; i < beacons.length(); i++) {
+                JSONObject beaconObj = beacons.getJSONObject(i);
+                String beaconMinor = beaconObj.getString("external_id");
+                int beaconX = beaconObj.getInt("x");
+                int beaconY = beaconObj.getInt("y");
+                beaconToPoint.put(beaconMinor, new Point(beaconX, beaconY));
+            }
+
             return nameToIdMap;
 
         }
@@ -376,6 +370,35 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             super.onPostExecute(stringIntegerHashMap);
         }
     }
+
+    public String getClosestItemWithCoupon(String currentClosestBeaconId) {
+        Point specificBeaconPoint = beaconToPoint.get(currentClosestBeaconId);
+        double minDistance = 10000000.0;
+        String minItemName = "";
+        Iterator<String> itr = nameToPoint.keySet().iterator();
+        while(itr.hasNext()) {
+            String currItemName = itr.next();
+            Point pointOfShop = nameToPoint.get(currItemName);
+            double currDistance = getDistanceBetweenPoints(specificBeaconPoint, pointOfShop);
+            if(currDistance < minDistance) {
+                minDistance = currDistance;
+                minItemName = currItemName;
+            }
+        }
+
+        return minItemName;
+
+    }
+
+    private double getDistanceBetweenPoints(Point specificBeaconPoint, Point pointOfShop) {
+        int x1 = specificBeaconPoint.x;
+        int y1 = specificBeaconPoint.y;
+        int x2 = pointOfShop.x;
+        int y2 = pointOfShop.y;
+        return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    }
+
+
             /* ---------- ANDROID WEAR ------------- */
     /**
      * Handles the button to launch a notification.
@@ -383,7 +406,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     public void showNotification(View view) {
         Notification notification = new NotificationCompat.Builder(MapViewActivity.this).setSmallIcon(R.drawable.shopli)
                 .setContentTitle(getString(R.string.notification_title))
-                .setContentText(getString(R.string.notification_content))
+                .setContentText("You have 10% discount on " + COUPON_STR)
                 .setSmallIcon(R.drawable.ic_launcher) // addAction
                 .build();
 
