@@ -32,7 +32,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0.18"
-            android:onClick="onSearchClick" />
+            android:onClick="onSearchClick"
+            android:background="#ff3eb8ff" />
         <ImageButton
 
             android:layout_width="match_parent"

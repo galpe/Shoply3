@@ -2,15 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="#ff000000">
 
-    <TextView
-        android:layout_width="403dp"
-        android:layout_height="wrap_content"
-        android:text="ERROR"
-        android:id="@+id/textView3"
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:background="@drawable/ic_alert"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.99"
+        android:layout_weight="0.93" />
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connection Error"
+        android:gravity="center"
+        android:textStyle="bold|italic"
+        android:id="@+id/textView3"
+        android:layout_weight="0.5"
+        android:layout_gravity="center_horizontal"
         android:autoText="false"
-        android:background="#ff41171b" />
+        android:background="#ff000000"
+        android:clickable="false"
+        android:textColor="#ffffffff"
+        android:textSize="30dp"
+        android:layout_marginTop="10dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Sorry there is no connection to shoply server check your internet connection, or try to connect later. "
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.5"
+        android:autoText="false"
+        android:background="#ff000000"
+        android:textColor="#ffffffff"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp"
+        android:textSize="20dp"
+        android:layout_marginTop="50dp" />
+    </GridLayout>
+
 </LinearLayout>
