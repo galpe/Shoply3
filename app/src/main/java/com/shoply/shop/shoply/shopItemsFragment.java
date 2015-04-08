@@ -21,17 +21,13 @@ import java.util.List;
  */
 public class shopItemsFragment extends ListFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "itemNames";
     private static final String ARG_PARAM2 = "itemIDs";
 
-    // TODO: Rename and change types of parameters
     private HashMap<String,Integer> shoppingItems;
 
     private OnFragmentInteractionListener mListener;
 
-    // TODO: Rename and change types of parameters
     public static shopItemsFragment newInstance(HashMap<String, Integer> items) {
         shopItemsFragment fragment = new shopItemsFragment();
         Bundle args = new Bundle();
@@ -52,7 +48,6 @@ public class shopItemsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             shoppingItems = (HashMap<String,Integer>) getArguments().getSerializable("items");
         }

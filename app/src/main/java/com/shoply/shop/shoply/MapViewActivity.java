@@ -1,6 +1,7 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -99,21 +101,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         try {
             HashMap<String, Integer> map = task.get();
+            Intent i = new Intent(this, ItemPicker.class);
+            i.putExtra("items",map);
 
-            // Check that the activity is using the layout version with
-            // the fragment_container FrameLayout
-            if (findViewById(R.id.fragment_container) != null) {
-                // Create a new Fragment to be placed in the activity layout
-                shopItemsFragment firstFragment = shopItemsFragment.newInstance(map);
+            startActivity(i);
 
-                // Add the fragment to the 'fragment_container' FrameLayout
-                //getFragmentManager().beginTransaction()
-                //    .add(R.id.fragment_container, firstFragment).commit();
-            }
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }

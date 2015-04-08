@@ -10,18 +10,47 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class ItemPicker extends ActionBarActivity {
+
+    private HashMap<String,Integer> shoppingItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_picker);
+
+        shoppingItems = (HashMap<String,Integer>) this.getIntent().getSerializableExtra("items");
+
+        /* Setup the auto complete items */
+        // Get a reference to the AutoCompleteTextView in the layout
+        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchItems);
+        // Get the string array
+        List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
+        // Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuesToMatch);
+        textView.setAdapter(adapter);
+
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+            // Check that the activity is using the layout version with
+            // the fragment_container FrameLayout
+            if (findViewById(R.id.fragment_container) != null) {
+                // Create a new Fragment to be placed in the activity layout
+                shopItemsFragment firstFragment = shopItemsFragment.newInstance(shoppingItems);
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getFragmentManager().beginTransaction()
+                   .add(R.id.fragment_container, firstFragment).commit();
+            }
         }
     }
 
@@ -46,21 +75,5 @@ public class ItemPicker extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_item_picker, container, false);
-            return rootView;
-        }
     }
 }

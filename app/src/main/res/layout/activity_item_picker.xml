@@ -1,4 +1,26 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context="com.shoply.shop.shoply.ItemPicker" tools:ignore="MergeRootFrame" />
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/container"
+    android:layout_weight="4"
+    android:layout_alignParentBottom="true"
+    android:weightSum="1">
+    <AutoCompleteTextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_edittext"
+        android:id="@+id/searchItems"
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:hint="Enter an item name"
+        android:textColorHint="#bbbbbb"
+        android:layout_marginTop="10dp" />
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

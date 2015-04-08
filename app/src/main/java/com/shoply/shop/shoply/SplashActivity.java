@@ -80,6 +80,7 @@ public class SplashActivity extends Activity {
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
+                urlConnection.setUseCaches(false);
                 urlConnection.connect();
 
                 // Read the input stream into a String
