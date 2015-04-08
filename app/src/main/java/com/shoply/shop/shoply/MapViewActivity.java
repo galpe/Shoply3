@@ -64,18 +64,17 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         baseUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() +".json";
         itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
-        viewUrl = VIEW_URL + "13/";//String.valueOf(shopID).toString();
+        viewUrl = VIEW_URL + String.valueOf(shopID).toString() +"/";//13/
 
         web = (WebView) findViewById(R.id.webView);
 
-        ProgressDialog progress =  ProgressDialog.show(this,  "Showing your map", "Loading...", true);
+        ProgressDialog progress =  ProgressDialog.show(this,  "Getting your map", "Loading...", true);
+
         web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView(progress));
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setUseWideViewPort(true);
-//        web.getSettings().setLoadWithOverviewMode(true);
-//        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
@@ -90,6 +89,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         if (0 == currentClosestBeacon) {
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
                     Toast.LENGTH_LONG).show(); // TODO: Dont send
+        } else {
+            String urlWithGeoLocation = viewUrl + "?beacon_id=" + currentClosestBeacon + "/"; // TODO: DO SOMETHING
         }
     }
 
@@ -129,8 +130,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         return super.onKeyDown(keyCode, event);
     }
 
-    // Member variable stored to reflect user's choice
-    //private String mUserUrl = "http://stackoverflow.com";
 
     public class ShopMapWebView extends WebViewClient {
 
@@ -139,7 +138,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         public ShopMapWebView(ProgressDialog progressBar) {
             this.progressBar=progressBar;
-//            progressBar.setVisibility(View.VISIBLE);
             progressBar.show();
         }
 
@@ -190,7 +188,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     }
 
 
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     private class GetSpecificShopInfoTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
 
 
