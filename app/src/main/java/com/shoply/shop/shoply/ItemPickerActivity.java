@@ -1,29 +1,20 @@
 package com.shoply.shop.shoply;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.AutoCompleteTextView.OnDismissListener;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class ItemPicker extends ActionBarActivity implements shopItemsFragment.OnItemPressedInterface
+public class ItemPickerActivity extends ActionBarActivity implements shopItemsFragment.OnItemPressedInterface
 {
 
     private HashMap<String,Integer> shoppingItems;

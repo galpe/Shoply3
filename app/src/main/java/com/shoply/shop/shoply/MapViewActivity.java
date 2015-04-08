@@ -130,7 +130,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         try {
             HashMap<String, Integer> map = task.get();
-            Intent i = new Intent(this, ItemPicker.class);
+            Intent i = new Intent(this, ItemPickerActivity.class);
             i.putExtra("items",map);
             startActivityForResult(i,0);
 
