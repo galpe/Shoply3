@@ -1,5 +1,6 @@
 package com.shoply.shop.shoply;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,9 +8,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -29,13 +32,17 @@ public class SearchActivity extends ActionBarActivity {
 
         // Get a reference to the AutoCompleteTextView in the layout
         textView = (AutoCompleteTextView) findViewById(R.id.searchShop);
+
         // Get the string array
         String[] shopsAutoComplete = getShopsNamesFromSharedPreferences();
         // Create the adapter and set it to the AutoCompleteTextView
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shopsAutoComplete);
 
+
         textView.setAdapter(adapter);
+
+
     }
 
     private String[] getShopsNamesFromSharedPreferences() {
@@ -92,6 +99,20 @@ public class SearchActivity extends ActionBarActivity {
 //                searchManager.getSearchableInfo(getComponentName()));
 
         return true;
+    }
+
+    /* ------------------------ */
+
+    public void clicked(View v) {
+
+
+    }
+
+
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
 }

@@ -8,6 +8,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/search_bac">
 
+    <Spinner
+        android:id="@+id/mySpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp" />
+
 
     <AutoCompleteTextView
         android:layout_width="fill_parent"

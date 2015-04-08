@@ -2,6 +2,7 @@ package com.shoply.shop.shoply;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -68,12 +69,13 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         viewUrl = VIEW_URL + "13/";//String.valueOf(shopID).toString();
 
         web = (WebView) findViewById(R.id.webView);
-        
-        
+
+        ProgressDialog progress =  ProgressDialog.show(this,  "Showing your map", "Loading...", true);
         web.loadUrl(viewUrl);
-        web.setWebViewClient(new ShopMapWebView());
+        web.setWebViewClient(new ShopMapWebView(progress));
         web.getSettings().setJavaScriptEnabled(true);
-        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        web.getSettings().setLoadWithOverviewMode(true);
+        web.getSettings().setUseWideViewPort(true);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
@@ -123,6 +125,24 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     //private String mUserUrl = "http://stackoverflow.com";
 
     public class ShopMapWebView extends WebViewClient {
+
+
+        private ProgressDialog progressBar;
+
+        public ShopMapWebView(ProgressDialog progressBar) {
+            this.progressBar=progressBar;
+//            progressBar.setVisibility(View.VISIBLE);
+            progressBar.show();
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            // TODO Auto-generated method stub
+            super.onPageFinished(view, url);
+            progressBar.hide();
+        }
+
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // This line right here is what you're missing.

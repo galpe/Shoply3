@@ -28,7 +28,7 @@ public class SplashActivity extends Activity {
     private static int SPLASH_TIME_OUT = 1;
     private static String LOG_TAG = "SPLASH_ACTIVITY";
     public static final String URL_TO_ALL_SHOPS =  "https://infinite-eyrie-7266.herokuapp.com/shops.json";
-    public static final int NUM_OF_SHOPS_TO_FETCH =  10;
+    public static final int NUM_OF_SHOPS_TO_FETCH =  100;
     public static final String CURRENT_SHARED_PREFERENCES_NAME =  "SplashActivitySharedPref";
 
     @Override
@@ -80,6 +80,7 @@ public class SplashActivity extends Activity {
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
+                urlConnection.setUseCaches(false);
                 urlConnection.connect();
 
                 // Read the input stream into a String
