@@ -1,16 +1,12 @@
 package com.shoply.shop.shoply;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.ListFragment;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
-import com.shoply.shop.shoply.dummy.DummyContent;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,7 +91,7 @@ public class shopItemsFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 

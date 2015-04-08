@@ -54,18 +54,19 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
-
         shopID = this.getIntent().getExtras().getInt("shopID");
 
         task = new GetSpecificShopInfoTask().execute(shopID);
 
-        web = (WebView) findViewById(R.id.webView);
-        web.setWebViewClient(new ShopMapWebView());
-        web.getSettings().setJavaScriptEnabled(true);
         finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
         itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json";
-        Log.v("MAP_VIEW_ACTIVITY", finalUrl);
+
+        web = (WebView) findViewById(R.id.webView);
+        Log.v("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
+        web.setWebViewClient(new ShopMapWebView());
+        web.getSettings().setJavaScriptEnabled(true);
+
 
 
     }
@@ -164,6 +165,9 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             String specificShopStr = null;
 
             try {
+                if(itemsUrl == null) {
+
+                }
 
                 Uri builtUri = Uri.parse(itemsUrl).buildUpon()
                         .build();
