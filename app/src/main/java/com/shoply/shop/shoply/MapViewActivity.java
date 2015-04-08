@@ -67,8 +67,6 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         task = new GetAllShopInfoByUrlTask();
 
-
-
         web = (WebView) findViewById(R.id.webView);
 
         ProgressDialog progress =  ProgressDialog.show(this,  "Getting your map", "Loading...", true);
@@ -80,9 +78,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.getSettings().setUseWideViewPort(true);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
-        task.execute(viewUrl);
-
-
+        task.execute(itemsUrl);
 
     }
 
