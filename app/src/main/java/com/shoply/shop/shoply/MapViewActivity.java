@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -71,6 +72,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.loadUrl(viewUrl);
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
+        web.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
         task = new GetSpecificShopInfoTask().execute(shopID);
 
@@ -83,7 +86,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         updateClosest();
         if (0 == currentClosestBeacon) {
             Toast.makeText(MapViewActivity.this, "Cannot find a nearby beacon. We're sorry",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG).show(); // TODO: Dont send
         }
     }
 
@@ -100,8 +103,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                 shopItemsFragment firstFragment = shopItemsFragment.newInstance(map);
 
                 // Add the fragment to the 'fragment_container' FrameLayout
-                getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+                //getFragmentManager().beginTransaction()
+                //    .add(R.id.fragment_container, firstFragment).commit();
             }
 
         } catch (InterruptedException e) {
