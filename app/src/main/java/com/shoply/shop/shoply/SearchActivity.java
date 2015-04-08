@@ -90,10 +90,4 @@ public class SearchActivity extends ActionBarActivity {
         return true;
     }
 
-
-
-
-    private void doMySearch(String query) {
-        Log.d("Event", query);
-    }
 }

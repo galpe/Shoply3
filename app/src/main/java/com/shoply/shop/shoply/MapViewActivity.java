@@ -3,6 +3,7 @@ package com.shoply.shop.shoply;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by daniellag on 4/7/15.
@@ -41,6 +43,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private int shopID;
     private int currentClosestBeacon = 0;
     private String finalUrl;
+    private String itemsUrl;
     WebView web;
 
     @Override
@@ -54,8 +57,20 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.setWebViewClient(new ShopMapWebView());
         web.getSettings().setJavaScriptEnabled(true);
         finalUrl = BASE_URL + String.valueOf(shopID).toString() +".json";
+        itemsUrl = BASE_URL + String.valueOf(shopID).toString() + "/items.json"
         Log.v("MAP_VIEW_ACTIVITY", finalUrl);
         web.loadUrl(finalUrl); // TODO: change to correct view
+
+        //TODO: REMOVE
+//        getSpecificShopInfo(shopID);
+        try {
+            HashMap<String, Integer> map1 = new GetSpecificShopInfoTask().execute(1).get();
+            Log.e(LOG_TAG, "Got Map with: " + map1.get("ampm"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onGeoClick(View view) {
@@ -127,100 +142,103 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
 
     ///////////////////////////////////////////
-    public HashMap<String, Integer> getSpecificShopInfo(int shopId) {
+    private class GetSpecificShopInfoTask extends AsyncTask<Integer, Void, HashMap<String, Integer>> {
+
+
+        protected HashMap<String, Integer> doInBackground(Integer... params) { //TODO: remove integer
 
 
 
-        // These two need to be declared outside the try/catch
-        // so that they can be closed in the finally block.
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
 
-        // Will contain the raw JSON response as a string.
-        String specificShopStr = null;
+            // Will contain the raw JSON response as a string.
+            String specificShopStr = null;
 
-        try {
+            try {
 
-            Uri builtUri = Uri.parse(finalUrl).buildUpon()
-                    .build();
+                Uri builtUri = Uri.parse(itemsUrl).buildUpon()
+                        .build();
 
-            URL url = new URL(builtUri.toString());
+                URL url = new URL(builtUri.toString());
 
-            Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
-            // Create the request to OpenWeatherMap, and open the connection
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+                // Create the request to OpenWeatherMap, and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
 
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                // Nothing to do.
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                specificShopStr = buffer.toString();
+                Log.v(LOG_TAG, "JSON STRING IS: " + specificShopStr);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                // If the code didn't successfully get the weather data, there's no point in attempting
+                // to parse it.
                 return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                return null;
-            }
-            specificShopStr = buffer.toString();
-            Log.v(LOG_TAG, "JSON STRING IS: " + specificShopStr);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attempting
-            // to parse it.
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e("ForecastFragment", "Error closing stream", e);
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("ForecastFragment", "Error closing stream", e);
+                    }
                 }
             }
-        }
 
 
-        try {
-            return createJSONArray(specificShopStr);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
+            try {
+                return createJSONArray(specificShopStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+            return null;
         }
-        return null;
+
+        private HashMap<String, Integer> createJSONArray(String specificShopStr) throws JSONException {
+
+            JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
+            JSONArray shelves = specificShopJsonObj.getJSONArray("groceries");
+            HashMap<String, Integer> nameToIdMap = new HashMap<String, Integer>();
+
+            for(int i = 0; i < shelves.length(); i++) {
+                int id = shelves.getJSONObject(i).getInt("id");
+                String name = shelves.getJSONObject(i).getString("name");
+                nameToIdMap.put(name, id);
+                Log.e(LOG_TAG, "name: " + name + " id: " + id);
+            }
+
+            return nameToIdMap;
+
+
+        }
+
     }
-
-    private HashMap<String, Integer> createJSONArray(String specificShopStr) throws JSONException {
-
-        JSONObject specificShopJsonObj = new JSONObject(specificShopStr);
-        JSONArray shelves = specificShopJsonObj.getJSONArray("shelves");
-        HashMap<String, Integer> nameToIdMap = new HashMap<String, Integer>();
-
-        for(int i = 0; i < shelves.length(); i++) {
-            int id = shelves.getJSONObject(i).getInt("id");
-            String name = shelves.getJSONObject(i).getString("type");
-            nameToIdMap.put(name, id);
-            Log.v(LOG_TAG, "name: " + name + " id: " + id);
-        }
-
-        return nameToIdMap;
-
-
-    }
-
-
 }
