@@ -65,7 +65,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         itemsUrl = BASE_SHOPS_URL + String.valueOf(shopID).toString() + "/items.json";
         viewUrl = VIEW_URL + String.valueOf(shopID).toString() +"/"; //13/
 
-        task = new GetAllShopInfoByUrlTask().execute(viewUrl);
+        task = new GetAllShopInfoByUrlTask();
 
 
 
@@ -80,7 +80,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         web.getSettings().setUseWideViewPort(true);
         web.getSettings().setBuiltInZoomControls(true);
         //Setup an async task and let it go.
-        task = new GetAllShopInfoByUrlTask().execute(shopID);
+        task.execute(viewUrl);
 
 
 
@@ -94,6 +94,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                     Toast.LENGTH_LONG).show(); // TODO: Dont send
         } else {
             String urlWithGeoLocation = viewUrl + "?beacon_id=" + currentClosestBeacon + "/"; // TODO: DO SOMETHING
+            web.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
         }
     }
 
