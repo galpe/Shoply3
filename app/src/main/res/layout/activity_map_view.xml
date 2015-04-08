@@ -28,7 +28,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_weight="0.18"
-            />
+            android:onClick="onSearchClick" />
         <ImageButton
 
             android:layout_width="match_parent"
@@ -38,7 +38,8 @@
             android:gravity="center_vertical|center_horizontal"
             android:layout_marginRight="5dp"
             android:layout_weight="0.82"
-            android:layout_marginBottom="0dp" />
+            android:layout_marginBottom="0dp"
+            android:onClick="onGeoClick" />
     </LinearLayout>
     <GridLayout
         android:layout_width="match_parent"
