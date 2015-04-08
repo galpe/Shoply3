@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -38,11 +39,6 @@ import java.util.concurrent.ExecutionException;
  * Created by daniellag on 4/7/15.
  */
 public class MapViewActivity extends Activity implements ReceiveBeaconListener{
-    /* -- for wear -- */
-
-//    private static final int NOTIFICATION_ID = 1;
-//    private static final int NOTIFICATION_REQUEST_CODE = 1;
-//    private static final int NUM_SECONDS = 5;
 
     /* -- end wear -- */
 
@@ -63,7 +59,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     private String baseUrl;
     private String itemsUrl;
     private String viewUrl;
-    WebView web;
+    WebView webView;
+    WebSettings webSettings;
 
     //////////////////////////////////
     @Override
@@ -79,16 +76,35 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
         task = new GetAllShopInfoByUrlTask();
 
-        web = (WebView) findViewById(R.id.webView);
+        webView = (WebView) findViewById(R.id.webView);
 
-        ProgressDialog progress =  ProgressDialog.show(this,  "Getting your map", "Loading...", true);
+        final ProgressDialog progress =  ProgressDialog.show(this,  "Getting your map", "Loading...", true);
 
-        web.loadUrl(viewUrl);
-        web.setWebViewClient(new ShopMapWebView(progress));
-        web.getSettings().setJavaScriptEnabled(true);
-        web.getSettings().setLoadWithOverviewMode(true); // TODO: After Tal centers
-        web.getSettings().setUseWideViewPort(true);
-        web.getSettings().setBuiltInZoomControls(true);
+        webView.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (webView.canGoBack()) {
+                        webView.goBack();
+                        progress.dismiss();
+                        progress.cancel();
+                        return true;
+                    }
+                }
+                // process normally
+                progress.dismiss();
+                progress.cancel();
+                webView.onFinishTemporaryDetach();
+                return false;
+            }
+        });
+
+        webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setBuiltInZoomControls(true);
+        webView.setWebViewClient(new ShopMapWebView(progress));
+        webView.loadUrl(viewUrl);
         //Setup an async task and let it go.
         task.execute(itemsUrl);
 
@@ -103,8 +119,8 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
         } else {
             showNotification(view);
             String urlWithGeoLocation = viewUrl + "?beacon_id=" + "\"" + currentClosestBeacon + "\"" ; // TODO: DO SOMETHING
-            web.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
-            web.getSettings().setJavaScriptEnabled(true);
+            webView.loadUrl(urlWithGeoLocation); // TODO: Have zoom?
+            webView.getSettings().setJavaScriptEnabled(true);
             Log.e(TAG, urlWithGeoLocation);
         }
     }
@@ -141,11 +157,22 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && web.canGoBack()) {
-            web.goBack();
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
+            webView.goBack();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+
+        // Otherwise defer to system default behavior.
+        super.onBackPressed();
     }
 
 
@@ -158,6 +185,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             this.progressBar=progressBar;
             progressBar.show();
         }
+
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -181,10 +209,11 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             super.onPageStarted(view, url, favicon);
         }
 
+
     }
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void onBeaconsDiscovered(Beacon closeBeacon)
     {
         closest = closeBeacon;
