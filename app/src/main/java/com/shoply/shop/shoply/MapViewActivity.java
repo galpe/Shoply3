@@ -157,10 +157,11 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //We can ignore the requestCode and resultCode because we only send one.
-        int itemID = data.getIntExtra("result",-1);
-        if (-1 ==itemID ) {
-            //Very very wrong.
-            Log.d(TAG,"got back result from subsequent activity");
+        int[] itemID = data.getIntArrayExtra("result");
+        //quick error check
+        if ((0 == itemID.length) || ((1 == itemID.length) && (-1 ==itemID[0]))) {
+            //we failed
+            return;
         }
         //TODO new request URL using shop item.
 
