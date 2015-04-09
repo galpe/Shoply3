@@ -27,29 +27,35 @@ public class ItemPickerActivity extends ActionBarActivity
 
     private HashMap<String,Integer> shoppingItems;
     ListView x;
+    ArrayAdapter<String> listViewAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_picker);
 
         shoppingItems = (HashMap<String,Integer>) this.getIntent().getSerializableExtra("items");
-
         List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
 
         x = (ListView)findViewById(R.id.itemsListView);
-        x.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, valuesToMatch));
+        listViewAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, valuesToMatch);
+        listViewAdapter.setNotifyOnChange(true);
+        x.setAdapter(listViewAdapter);
         x.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE); //recheck this...
 
         x.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Log.d("test", "clicked");
                 CheckedTextView Ctv = (CheckedTextView) arg1; //garunteed
+
+
                 //Ctv.toggle();
             }
         });
+        x.setTextFilterEnabled(true);
 
     }
 
@@ -74,8 +80,6 @@ public class ItemPickerActivity extends ActionBarActivity
         for (int i = 0; i < stockArr.length; i++) {
             result[i] = stockArr[i].intValue();
         }
-
-
         itemsRequested(result);
     }
 
