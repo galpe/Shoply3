@@ -5,21 +5,28 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class ItemPickerActivity extends ActionBarActivity implements shopItemsFragment.OnItemPressedInterface
+public class ItemPickerActivity extends ActionBarActivity
 {
 
     private HashMap<String,Integer> shoppingItems;
-
-    private shopItemsFragment firstFragment;
+    ListView x;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,60 +34,61 @@ public class ItemPickerActivity extends ActionBarActivity implements shopItemsFr
 
         shoppingItems = (HashMap<String,Integer>) this.getIntent().getSerializableExtra("items");
 
-        /* Setup the auto complete items */
-        // Get a reference to the AutoCompleteTextView in the layout
-        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchItems);
-        // Get the string array
-        List<String> valuesToMatch = new ArrayList<>(shoppingItems.keySet());
-        // Create the adapter and set it to the AutoCompleteTextView
-        final ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuesToMatch);
-        textView.setAdapter(adapter);
+        List<String> valuesToMatch = new ArrayList<String>(shoppingItems.keySet());
 
-        textView.addTextChangedListener(new TextWatcher() {
+        x = (ListView)findViewById(R.id.itemsListView);
+        x.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_multiple_choice , android.R.id.text1, valuesToMatch));
+        x.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE); //recheck this...
 
-                                            @Override
-                                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                                return; //Do nothing.
-                                            }
+        x.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                                            @Override
-                                            public void beforeTextChanged(CharSequence s, int start, int before, int count) {
-                                                return;//Do nothing
-                                            }
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Log.d("test", "clicked");
+                CheckedTextView Ctv = (CheckedTextView) arg1; //garunteed
+                //Ctv.toggle();
+            }
+        });
 
-                                            @Override
-                                            public void afterTextChanged(Editable s) {
-                                                String text = s.toString();
-                                                // Call back the Adapter with current character to Filter
-                                                firstFragment.filterText(text);
-                                            }
-                                        }
-        );
-            if (savedInstanceState == null) {
-            // Check that the activity is using the layout version with
-            // the fragment_container FrameLayout
-            if (findViewById(R.id.fragment_container) != null) {
-                // Create a new Fragment to be placed in the activity layout
-                firstFragment = shopItemsFragment.newInstance(shoppingItems);
+    }
 
-                // Add the fragment to the 'fragment_container' FrameLayout
-                getFragmentManager().beginTransaction()
-                   .add(R.id.fragment_container, firstFragment).commit();
+
+
+    public void onFindItemsClick(View v)
+    {
+        List<Integer> checkedItemIDs = new ArrayList<Integer>();
+        SparseBooleanArray checked = x.getCheckedItemPositions();
+
+        for (int i = 0; i < x.getAdapter().getCount(); i++) {
+            if (checked.get(i)) {
+                String itemName = ((String)x.getItemAtPosition(i));
+                int id = shoppingItems.get(itemName);
+                checkedItemIDs.add(id);
             }
         }
+        // FUCK JAVA
+        Integer[] stockArr = new Integer[checkedItemIDs.size()];
+        stockArr = checkedItemIDs.toArray(stockArr);
+        int[] result = new int[stockArr.length];
+        for (int i = 0; i < stockArr.length; i++) {
+            result[i] = stockArr[i].intValue();
+        }
+
+
+        itemsRequested(result);
     }
 
-    public void onItemSelected(View view) {
-        AutoCompleteTextView textView = (AutoCompleteTextView) view;
-        Editable text = textView.getText();
-        String key = text.toString();
-        int id = shoppingItems.get(key);
-        itemPressed(id);
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        int[] arr = {-1};
+        intent.putExtra("result",arr);
+        setResult(RESULT_CANCELED, intent);
+        finish();
     }
 
-    public void itemPressed(int id)
+    public void itemsRequested(int[] id)
     {
         //Send this back to mapview activity.
         //if already passed back

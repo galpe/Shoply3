@@ -10,23 +10,45 @@
     android:weightSum="1"
     android:nestedScrollingEnabled="false"
     >
-    <AutoCompleteTextView
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/rounded_edittext"
-        android:id="@+id/searchItems"
-        android:singleLine="true"
-        android:padding="10dp"
-        android:gravity="center_horizontal"
-        android:hint="Enter an item name"
-        android:textColorHint="#bbbbbb"
-        android:layout_marginTop="10dp"
-        android:autoText="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/fragment_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <AutoCompleteTextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_edittext"
+            android:id="@+id/searchItems"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:gravity="center_horizontal"
+            android:hint="Enter an item name"
+            android:textColorHint="#bbbbbb"
+            android:layout_marginTop="10dp"
+            android:autoText="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="0.97" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find Items"
+            android:id="@+id/findItemsBtn"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:onClick="onFindItemsClick" />
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemsListView" />
+
+
 </LinearLayout>
