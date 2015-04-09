@@ -75,7 +75,7 @@ public class SplashActivity extends Activity {
 
                 URL url = new URL(builtUri.toString());
 
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+//                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -105,7 +105,7 @@ public class SplashActivity extends Activity {
                     return null;
                 }
                 shoplySearchStr = buffer.toString();
-                Log.v(LOG_TAG, "JSON STRING IS: " + shoplySearchStr);
+//                Log.v(LOG_TAG, "JSON STRING IS: " + shoplySearchStr);
             } catch (IOException e) {
                 gotException = true;
                 Log.e(LOG_TAG, "Got exception on network ", e);
@@ -171,7 +171,7 @@ public class SplashActivity extends Activity {
                 sharedPrefsEditor.commit();
 
                 shops[i] = shopName;
-                Log.v(LOG_TAG, "Shop is: " + shopName +" id is: " + id + " beacon_group_id " + beaconGroupId);
+//                Log.v(LOG_TAG, "Shop is: " + shopName +" id is: " + id + " beacon_group_id " + beaconGroupId);
             }
 
             SharedPreferences prefs = getSharedPreferences(CURRENT_SHARED_PREFERENCES_NAME, MODE_PRIVATE);

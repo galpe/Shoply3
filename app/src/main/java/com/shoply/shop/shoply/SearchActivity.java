@@ -51,7 +51,7 @@ public class SearchActivity extends ActionBarActivity {
             String nextShop = itr.next();
             shops[i] = nextShop;
             i++;
-            Log.v("SEARCH_ACTIVITY", "Shop names: " + nextShop);
+//            Log.v("SEARCH_ACTIVITY", "Shop names: " + nextShop);
         }
 
 

@@ -155,7 +155,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { //*#*#*#*#*#**#*#*#*#*#**#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*
         //We can ignore the requestCode and resultCode because we only send one.
         int[] itemID = data.getIntArrayExtra("result");
         //quick error check
@@ -163,7 +163,29 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
             //we failed
             return;
         }
-        //TODO new request URL using shop item.
+
+        int currBeaconId = getBeaconID();
+        String urlWithPath;
+        String arrayStr = getStringOfArray(itemID);
+        Log.e("ARRAY_STR", arrayStr);
+        if(currBeaconId != 0) {
+            urlWithPath  = VIEW_URL + String.valueOf(shopID).toString() + "/?beacon_id=\"" + currBeaconId + "\"" +"&product_ids=\"" + arrayStr + "\"";
+            Log.e("URL_WITH_BEACON_ID", urlWithPath);
+        } else {
+            urlWithPath = VIEW_URL + String.valueOf(shopID).toString() +"/" + "product_ids=\"" + arrayStr + "\"";
+            Log.e("URL_WITHOUT_BEACON", urlWithPath);
+        }
+
+//        webView.loadUrl(urlWithPath);
+    }
+
+    private String getStringOfArray(int[] itemID) {
+        String finalStringOfArray = "[";
+        for(int i = 0; i < itemID.length -1; i++) {
+            finalStringOfArray += itemID[i] + ",";
+        }
+        finalStringOfArray+=itemID[itemID.length -1] + "]";
+        return finalStringOfArray;
 
     }
 
@@ -274,7 +296,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
 
                 URL url = new URL(builtUri.toString());
 
-                Log.v(TAG, "Built URI " + builtUri.toString());
+//                Log.v(TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -303,7 +325,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                     return null;
                 }
                 specificShopStr = buffer.toString();
-                Log.v(TAG, "JSON STRING IS: " + specificShopStr);
+//                Log.v(TAG, "JSON STRING IS: " + specificShopStr);
             } catch (IOException e) {
                 Log.e(TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
@@ -317,7 +339,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e("ForecastFragment", "Error closing stream", e);
+                        Log.e("MapViewStream", "Error closing stream", e);
                     }
                 }
             }
@@ -351,7 +373,7 @@ public class MapViewActivity extends Activity implements ReceiveBeaconListener{
                 int y = shelves.getJSONObject(i).getInt("y");
                 nameToIdMap.put(name, id);
                 nameToPoint.put(name, new Point(x,y));
-                Log.e("DANIELLA", "name: " + name + " x: " + x + " y: " + y);
+                //Log.e("DANIELLA", "name: " + name + " x: " + x + " y: " + y);
             }
 
             for(int i = 0; i < beacons.length(); i++) {
